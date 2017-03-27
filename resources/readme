@@ -1,1 +1,3 @@
-Testing
+The CustomSignature page references a logo and also references the Lightning Design System resource.  The logo should be replaced with one from the user's own repository.  The SLDS reference package can be downloaded or accessed from here:
+
+https://www.lightningdesignsystem.com/downloads/
