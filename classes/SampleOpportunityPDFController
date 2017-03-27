@@ -1,0 +1,49 @@
+/** 
+*
+*   Title     : SampleOpportunityPDFController
+*   Author    : To A Finish (KS)
+*   Purpose   : This class return list of opportunity line item order by Order Line
+*   Revisions : 12/14/2014 - To A Finish (KS) Original
+*
+**/
+
+public class SampleOpportunityPDFController {
+    public contact con{get;set;}
+    public Opportunity opp{get;set;}
+    public signature__signature__c sig;
+    public String attachmentid { get; set; }
+    public SampleOpportunityPDFController(Apexpages.StandardController controller){
+        Id sigId = ApexPages.currentPage().getParameters().get('Id');
+        if(sigId<>null){
+            sig = [Select id,signature__Contact__c,Opportunity__c from signature__signature__c where id=:sigId];    
+        }
+        if(sig<>null && sig.id<>null && sig.signature__Contact__c<>null){
+            try{
+                con=[select firstname,lastname,email,phone from contact where id=:sig.signature__Contact__c];
+                if(Schema.SObjectType.Attachment.isAccessible()) {
+                    attachmentid = [select id from Attachment where parentId=:sig.Id and name like 'Signature%' order by createdDate desc limit 1].id;
+                }
+            }
+            catch(Exception e){system.debug('$$$Exception :'+e);}
+        }
+        if(sig<>null && sig.id<>null && sig.Opportunity__c<>null){
+            try{
+                opp=[select id,name,amount,account.name,account.billingstreet,account.billingcity,account.billingstate,account.billingcountry,account.billingpostalcode from opportunity where id=:sig.Opportunity__c];              
+            }
+            catch(Exception e){system.debug('$$$Exception :'+e);}
+        }
+
+    }
+    
+    public List < OpportunityLineItem > getOpportunityline(){
+        if(sig<>null && sig.id<>null && sig.Opportunity__c<>null){
+            List<OpportunityLineItem> lineItemList = [select id,opportunityid,unitprice,pricebookEntry.Product2.Name,
+                                                      Quantity,TotalPrice 
+                                                      from OpportunityLineItem 
+                                                      where OpportunityId=:sig.Opportunity__c
+                                                      order by Product2.Name];
+            return lineItemList;
+        }
+        return null;
+    }
+}
