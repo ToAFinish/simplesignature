@@ -1,0 +1,10 @@
+@isTest
+public class SampleOpportunityPDFControllerTest {
+
+    public static testMethod void unitTest(){
+        Opportunity opp = new Opportunity();
+        ApexPages.StandardController con = new ApexPages.StandardController(opp);
+        SampleOpportunityPDFController testObk = new SampleOpportunityPDFController(con);
+        testObk.getOpportunityline();
+    }
+}
