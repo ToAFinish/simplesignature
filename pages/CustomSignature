@@ -1,0 +1,288 @@
+<apex:page standardController="Signature__c" id="pg" extensions="SignatureController" title="Simple Signature"  docType="html-5.0" standardStylesheets="true">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+
+          <meta name="apple-mobile-web-app-capable" content="yes"/>
+          <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+            <script type="text/javascript">
+                var __sfdcSessionId = '{!GETSESSIONID()}';
+            </script>
+            <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SignPad,'signature_pad-1.5.3/example/css/signature-pad.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS105, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+             
+            <script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
+            
+            <script>
+                
+                $(document).ready(function() {
+                    var oppId = '{!JSENCODE($CurrentPage.parameters.parentid)}';
+                    if(oppId !=null && oppId !=''){
+                        result = sforce.connection.retrieve("Id,Name", "Opportunity", [oppId]);
+                        document.getElementById('pg:frm:fset:0:oppName').innerHTML = result[0].Name;
+                    }
+                    var lookupIconId = $('a[title="Contact Lookup (New Window)"]').attr("id");
+                    document.getElementById(lookupIconId).style.width="10%";
+                    document.getElementById(lookupIconId).style.border="none";                    
+                });
+            </script>
+            
+            <script>
+                   var parentRecordId ='{!JSENCODE(parentId)}';
+                   if(parentRecordId=='' || parentRecordId==null){
+                       parentRecordId='noid';
+                   }  
+                   var backtoparent = '{!JSENCODE($CurrentPage.parameters.backtoparent)}';   
+                   console.log('backtoparent '+backtoparent);
+                function uploadFile(parentId)
+                    {    
+                        console.log('{!JSENCODE($CurrentPage.parameters.pdftemplate)}');
+                        var pdftemplate = '{!JSENCODE($CurrentPage.parameters.pdftemplate)}';
+                        var emailpdf = '{!JSENCODE($CurrentPage.parameters.emailpdf)}';
+                        var attachpdf = '{!JSENCODE($CurrentPage.parameters.attachpdf)}';
+                        var attachpdftoparent = '{!JSENCODE($CurrentPage.parameters.attachpdftoparent)}';
+                        var requestedform = '{!JSENCODE($CurrentPage.parameters.requestedform)}';
+                        
+                        var canvas = document.getElementById("padd");
+                        
+                        var context = canvas.getContext("2d");
+                        var mouseButton = 0;
+                        var lastX = lastY = null;
+                        var image = canvas.toDataURL().split(',')[1];
+                        
+                        var legaltext='';
+                        var fields = [<apex:repeat value="{!$ObjectType.Signature__c.fieldsets.SignatureFields}" var="fieldValue" id="fset">
+                            '{!fieldValue}'+':'+$('.'+'{!fieldValue}').val(),
+                            </apex:repeat>
+                        ];
+                        var field1 = [];                   
+                        for(var i=0;i<fields.length;i++){
+                            var field = fields[i].split(':');
+                            if(field[0]=='Opportunity__c'){
+                                var oppId = '{!JSENCODE($CurrentPage.parameters.parentid)}';
+                                var oppfield = field[0]+':'+oppId;
+                                field1.push(oppfield);
+                            } else if(field[0]=='signature__Contact__c'){
+                                field[1] = document.getElementById('searchInput').name;
+                                var conField = field[0]+':'+field[1];
+                                field1.push(conField);
+                            } else {
+                                var otherField = field[0]+':'+field[1];
+                                field1.push(otherField);                                
+                            }        
+                        }
+                        var result =  signature.SignatureController.saveFile2('{!signature__Signature__c.Id}', image,field1,legaltext,parentRecordId,pdftemplate,emailpdf,attachpdf,attachpdftoparent,requestedform,handleResult); 
+                    }
+                    function handleResult(result,event) {
+                        
+                        if(result.success) {
+                            try{
+                                console.log('backtoparent try '+backtoparent);
+                                if(backtoparent!='' && backtoparent!=null && (backtoparent=='1' || backtoparent==1) && parentRecordId!='noid'){
+                                    sforce.one.navigateToSObject(parentRecordId,'detail');
+                                }
+                                else{
+                                    sforce.one.navigateToSObject(result.signId,'detail');
+                                }
+                                console.log('Successfully saved signature in SF1');
+                            }
+                            catch(err){
+                                console.log('Successfully saved signature in classic SF');
+                                if(backtoparent!='' && backtoparent!=null && (backtoparent=='1' || backtoparent==1) && parentRecordId!='noid'){
+                                    window.location='/'+parentRecordId; 
+                                }
+                                else{
+                                    window.location='/'+result.signId;
+                                }
+                            }
+                        } else {
+                            var s = result.errorMessage;
+                            var rx = s.match(/\[(.*?)\]/);
+                            $('.msg').html("");  
+                            $('#msg'+rx[1]).html("Incorrect date. Please review and resubmit.");
+                            
+                        }
+                    }
+                    
+                    function show(f){
+                        if(f == 'signature__Name__c' || f == 'signature__City__c'){
+                           showButton();
+                        }
+                   }
+                        
+            </script>
+            
+        </head>
+        <style>
+                .bPageBlock{
+                            background-color:#fff !important;
+                            border-top:0px !important;
+                            border: 0px !important;
+                }
+                .pbSubheader{ display: -webkit-box;background-color:#F4F6F9 !important;color:#54698d !important;border: 0px !important;}
+                .pbBottomButtons{border-top:0px !important;}
+                
+                .data2Col{border:0px !important;}
+        </style>     
+        <body>
+            <div class="slds">
+                <div class="slds-page-header" role="banner">
+                    <div class="slds-grid">
+                      <span class="slds-text-heading--small"><b>Page Title Goes Here</b></span>
+                      <div style="position:absolute;top:-20px;right:220px;border-left:thin #d8dde6 solid; height:50px;" />
+                      <a href="http://www.simplesignatureapp.com/" target="_blank"><apex:image url="{!$Resource.SSLogo}" style="position:absolute;top:-24px;right:5px;"/></a>
+                    </div>
+                </div><br/>
+
+               <apex:form id="frm"> 
+                    <apex:actionFunction Name="showButton" reRender="btnId" />
+                        <apex:pageMessages ></apex:pageMessages>
+                        <table style="margin-left:2%;width:97%;">
+                            <tr><td colspan="2">Legal Text Goes Here</td></tr>
+                            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                            
+                            <apex:repeat value="{!$ObjectType.Signature__c.fieldsets.SignatureFields}" var="fieldValue" id="fset">
+                            <tr>
+                            <td><apex:outputLabel rendered="{!fieldValue.label != 'Name 2'}">{!fieldValue.label}:</apex:outputLabel>
+                                <apex:outputLabel rendered="{!fieldValue.label == 'Name 2'}">Last Name:</apex:outputLabel>  
+                            </td>
+                            <td>
+                                <apex:inputField value="{!signVF[fieldValue]}" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type != 'date' && fieldValue.type != 'datetime' && fieldValue!='Opportunity__c' && fieldValue!='signature__Contact__c'}" style="width:73%"/>
+                                <apex:outputPanel rendered="{!if(fieldValue=='signature__Contact__c',true,false)}">
+                                    <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+                                                <svg aria-hidden="true" class="slds-input__icon slds-icon-text-default">
+                                                    <use xlink:href="{!$Resource.signature__SLDS105}/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+                                                </svg>
+                                                <!-- Input With onkeyup Attribute To Search For Records For Every Value Entered -->
+                                                <input id="searchInput" name="" class="slds-input" type="text" placeholder="Search Records" onkeyup="searchActs($(this))" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="SrchDrpDwn" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="slds-lookup__menu" role="listbox" id="SrchDrpDwn" style="display:none;">
+                                            <div class="slds-lookup__item">
+                                                <button class="slds-button">
+                                                    <svg aria-hidden="true" class="slds-icon slds-icon-text-default slds-icon--small">
+                                                        <use xlink:href="{!$Resource.signature__SLDS105}/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+                                                    </svg>&quot;<span id="searchText"></span>&quot; in Contacts
+                                                </button>
+                                            </div>
+                                            
+                                            <ul class="slds-lookup__list" role="presentation" id="searchResultsUL" style="max-height: 240px;">        
+                                            </ul>
+                                        </div>
+                                        
+                                    </div>
+                                </apex:outputPanel>
+                                <apex:input type="date" value="{!dat}" styleClass="slds-input {!fieldValue}" rendered="{!fieldValue.type == 'date' || fieldValue.type == 'datetime'}"/> 
+                                <apex:outputText value="" rendered="{!fieldValue=='Opportunity__c'}" id="oppName" title="OpportunityName"></apex:outputText>
+                                <div id="msg{!fieldValue}" style="color:red;" class="msg"></div>
+                                    
+                              
+                            </td>
+
+                            </tr>
+                            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                            </apex:repeat>
+                        </table> 
+                        
+                
+                <apex:outputPanel styleclass="sigPad" id="signfrm" style="" >
+                  
+                    <div id="signature-pad" class="m-signature-pad">
+                        <div class="m-signature-pad--body">
+                          <canvas id="padd" style="height:160px;"></canvas>
+                        </div>
+                       <div class="m-signature-pad--footer">
+                          <div class="description">Sign above</div>
+                          <button id="btn" style="width: 59px;height:28px;background: none;background-color: gainsboro;top:24px" class="button clear " onclick="signaturePad.clear();return false;">Clear</button>
+                          
+                        </div> 
+                    </div>
+                      <script src="{!URLFOR($Resource.SignPad,'signature_pad-1.5.3/example/js/signature_pad.js')}"/>
+                     <script src="{!URLFOR($Resource.SignPad,'signature_pad-1.5.3/example/js/app.js')}"/>
+                     
+                  
+               </apex:outputPanel>
+              
+                <apex:outputPanel id="btnId">
+                        <div style="height:60px;"/>
+                       <center> 
+                           <apex:commandButton id="btn" value="{!$Label.signature__submit_button}" onclick="uploadFile('tedt');return false;" styleClass="slds-button slds-button--neutral" /> 
+                        </center>
+                </apex:outputPanel>
+                </apex:form>
+            </div>   
+        </body>
+    </html>
+    <script>
+   
+       function setDate(currentValue){
+            if(currentValue!=''){
+                var dateArray = currentValue.split('/');
+                $('.'+f).val(dateArray[1]+'-'+dateArray[2]+'-'+dateArray[0]);
+                document.getElementById('pg:frm:datehidden').value=dateArray[1]+'/'+dateArray[2]+'/'+dateArray[0];
+            }
+            else
+               document.getElementById('pg:frm:datehidden').value='[DATE]';
+            showButton();
+       }   
+                  
+    </script>
+    <script>
+        function searchActs(key){
+            document.getElementById('SrchDrpDwn').style.display = 'block';
+            searchKey = key.val();
+            if(searchKey == '')
+            $('#'+key.attr('aria-activedescendant')).hide();
+            $('#searchText').text(searchKey);
+            var oppId = '{!JSENCODE($CurrentPage.parameters.parentid)}';
+            //Querying For Records In Contact Name Matching The Input in The Text Field
+            //result = sforce.connection.query("select id,name from Contact where accountid in (select accountid from Opportunity where id='"+oppId+"') and name LIKE '"+searchKey+"%'");
+            result = sforce.connection.query("select id,name from Contact where lastname LIKE '"+searchKey+"%' OR firstname LIKE '"+searchKey+"%' or name LIKE '"+searchKey+"%'");
+            records = result.getArray("records");
+            var searchLis ="<li class=\"slds-list__item slds-has-divider--bottom-space\" style=\"padding-left: 5px; font-weight: 600; margin-bottom:3px; padding-bottom:3px; font-size: 18px;\">Contacts</li>";
+            if(records.length > 0){
+                for(var i=0; i<records.length; i++){
+        
+                    searchLis += '<li onclick="accInfo(\''+records[i].Id+'\');" class="slds-lookup__item"><a id="'+records[i].Id+'" href="#" role="option"><svg aria-hidden="true" class="slds-icon slds-icon-standard-user slds-icon--small">'
+                             +'<use xlink:href="{!$Resource.SLDS105}/assets/icons/standard-sprite/svg/symbols.svg#contact"></use></svg>'+records[i].Name+'</a></li>';
+                }
+            } else {
+                searchLis += '<li class="slds-lookup__item">No Records Found</li>';
+            }
+            $('#searchResultsUL').html(searchLis);
+        }
+        
+        function accInfo(conId){
+           $('#SrchDrpDwn').fadeOut();
+           result = sforce.connection.retrieve("Id,Name", "Contact", [conId]);
+           $('#searchInput').val(result[0].Name);
+           $('#searchInput').attr('name',result[0].Id);
+        }
+    </script>
+    <style>
+        .hasDatepicker {
+            position: relative;
+            z-index: 100000;
+        }
+        
+        .m-signature-pad{
+                height: 200px;
+                margin-top: 50px;
+                position: relative ;
+               // margin-left: -543px;
+               // width: 80%;
+        }
+        .m-signature-pad--body{
+                height: 160px;
+                top: -1px;
+                //margin-top: 50px;
+                //position: static;
+               // margin-left: -543px;
+                //width: 100%;
+        }
+    </style>
+</apex:page>
