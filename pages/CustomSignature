@@ -10,7 +10,7 @@
             </script>
             <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"/>
             <apex:stylesheet value="{!URLFOR($Resource.SignPad,'signature_pad-1.5.3/example/css/signature-pad.css')}"/>
-            <apex:stylesheet value="{!URLFOR($Resource.SLDS105, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.signature__SLDS105, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
              
             <script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
             
@@ -63,7 +63,7 @@
                                 var oppId = '{!JSENCODE($CurrentPage.parameters.parentid)}';
                                 var oppfield = field[0]+':'+oppId;
                                 field1.push(oppfield);
-                            } else if(field[0]=='signature__Signature__contact__c'){
+                            } else if(field[0]=='signature__Contact__c'){
                                 field[1] = document.getElementById('searchInput').name;
                                 var conField = field[0]+':'+field[1];
                                 field1.push(conField);
@@ -148,8 +148,8 @@
                                 <apex:outputLabel rendered="{!fieldValue.label == 'Name 2'}">Last Name:</apex:outputLabel>  
                             </td>
                             <td>
-                                <apex:inputField value="{!signVF[fieldValue]}" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type != 'date' && fieldValue.type != 'datetime' && fieldValue!='Opportunity__c' && fieldValue!='signature__Signature__contact__c'}" style="width:73%"/>
-                                <apex:outputPanel rendered="{!if(fieldValue=='signature__Signature__contact__c',true,false)}">
+                                <apex:inputField value="{!signVF[fieldValue]}" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type != 'date' && fieldValue.type != 'datetime' && fieldValue!='Opportunity__c' && fieldValue!='signature__Contact__c'}" style="width:73%"/>
+                                <apex:outputPanel rendered="{!if(fieldValue=='signature__Contact__c',true,false)}">
                                     <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
                                         <div class="slds-form-element">
                                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
@@ -248,7 +248,7 @@
                 for(var i=0; i<records.length; i++){
         
                     searchLis += '<li onclick="accInfo(\''+records[i].Id+'\');" class="slds-lookup__item"><a id="'+records[i].Id+'" href="#" role="option"><svg aria-hidden="true" class="slds-icon slds-icon-standard-user slds-icon--small">'
-                             +'<use xlink:href="{!$Resource.SLDS105}/assets/icons/standard-sprite/svg/symbols.svg#contact"></use></svg>'+records[i].Name+'</a></li>';
+                             +'<use xlink:href="{!$Resource.signature__SLDS105}/assets/icons/standard-sprite/svg/symbols.svg#contact"></use></svg>'+records[i].Name+'</a></li>';
                 }
             } else {
                 searchLis += '<li class="slds-lookup__item">No Records Found</li>';
