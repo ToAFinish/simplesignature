@@ -1,4 +1,4 @@
-<apex:page standardController="Signature__c" id="pg" extensions="SignatureController" title="Simple Signature"  docType="html-5.0" standardStylesheets="true">
+<apex:page standardController="signature__Signature__c" id="pg" extensions="signature.SignatureController" title="Simple Signature"  docType="html-5.0" standardStylesheets="true">
     <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
@@ -52,7 +52,7 @@
                         var image = canvas.toDataURL().split(',')[1];
                         
                         var legaltext='';
-                        var fields = [<apex:repeat value="{!$ObjectType.Signature__c.fieldsets.SignatureFields}" var="fieldValue" id="fset">
+                        var fields = [<apex:repeat value="{!$ObjectType.signature__Signature__c.fieldsets.signature__SignatureFields}" var="fieldValue" id="fset">
                             '{!fieldValue}'+':'+$('.'+'{!fieldValue}').val(),
                             </apex:repeat>
                         ];
@@ -63,7 +63,7 @@
                                 var oppId = '{!JSENCODE($CurrentPage.parameters.parentid)}';
                                 var oppfield = field[0]+':'+oppId;
                                 field1.push(oppfield);
-                            } else if(field[0]=='signature__Contact__c'){
+                            } else if(field[0]=='signature__Signature__contact__c'){
                                 field[1] = document.getElementById('searchInput').name;
                                 var conField = field[0]+':'+field[1];
                                 field1.push(conField);
@@ -106,7 +106,7 @@
                     }
                     
                     function show(f){
-                        if(f == 'signature__Name__c' || f == 'signature__City__c'){
+                        if(f == 'signature__Name__c' || f == 'signature__Signature__city__c'){
                            showButton();
                         }
                    }
@@ -131,7 +131,7 @@
                     <div class="slds-grid">
                       <span class="slds-text-heading--small"><b>Page Title Goes Here</b></span>
                       <div style="position:absolute;top:-20px;right:220px;border-left:thin #d8dde6 solid; height:50px;" />
-                      <a href="http://www.simplesignatureapp.com/" target="_blank"><apex:image url="{!$Resource.SSLogo}" style="position:absolute;top:-24px;right:5px;"/></a>
+                      <a href="http://www.simplesignatureapp.com/" target="_blank"><apex:image url="{!$Resource.signature__SSLogo}" style="position:absolute;top:-24px;right:5px;"/></a>
                     </div>
                 </div><br/>
 
@@ -142,14 +142,14 @@
                             <tr><td colspan="2">Legal Text Goes Here</td></tr>
                             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
                             
-                            <apex:repeat value="{!$ObjectType.Signature__c.fieldsets.SignatureFields}" var="fieldValue" id="fset">
+                            <apex:repeat value="{!$ObjectType.signature__Signature__c.fieldsets.signature__SignatureFields}" var="fieldValue" id="fset">
                             <tr>
                             <td><apex:outputLabel rendered="{!fieldValue.label != 'Name 2'}">{!fieldValue.label}:</apex:outputLabel>
                                 <apex:outputLabel rendered="{!fieldValue.label == 'Name 2'}">Last Name:</apex:outputLabel>  
                             </td>
                             <td>
-                                <apex:inputField value="{!signVF[fieldValue]}" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type != 'date' && fieldValue.type != 'datetime' && fieldValue!='Opportunity__c' && fieldValue!='signature__Contact__c'}" style="width:73%"/>
-                                <apex:outputPanel rendered="{!if(fieldValue=='signature__Contact__c',true,false)}">
+                                <apex:inputField value="{!signVF[fieldValue]}" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type != 'date' && fieldValue.type != 'datetime' && fieldValue!='Opportunity__c' && fieldValue!='signature__Signature__contact__c'}" style="width:73%"/>
+                                <apex:outputPanel rendered="{!if(fieldValue=='signature__Signature__contact__c',true,false)}">
                                     <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
                                         <div class="slds-form-element">
                                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
