@@ -1,0 +1,34 @@
+/*
+    COPIES THE SIGNATURE IMAGE FROM THE SIGNATURE OBJECT 
+    TO THE PARENT OPPORTUNITY RECORD AND FLAGS IT AS SIGNED
+*/
+trigger copySig on signature__Signature__c (after insert, after update) {
+    Map <Id,signature__Signature__c> sigMap = new Map <Id, signature__Signature__c>();
+    Set <Id> newIds = new Set <Id> ();
+    
+    for ( signature__Signature__c sig:Trigger.new ) {
+        if ( sig.signature__Signature__c != null && 
+             sig.signature__Signature__c != Trigger.oldMap.get( sig.Id ).signature__Signature__c &&
+             sig.Opportunity__c != null ) {
+            newIds.add( sig.Opportunity__c );
+            sigMap.put( sig.Opportunity__c, sig );
+        }
+    }
+    
+    if ( !newIds.isEmpty() ) {
+        List < Opportunity > oList = [select Id, SignatureImage__c, Signed__c 
+                                         from Opportunity 
+                                         where Id in:newIds
+                                         limit 1000
+                                        ];
+        if( !iList.isEmpty() ) {
+            for ( Opportunity o:iList ) {
+                o.SignatureImage__c = sigMap.get( o.Id ).signature__Signature__c;
+                o.Signed__c = TRUE;
+            }
+            try {
+                update oList;
+            } catch (exception ex) {}
+        }
+    }
+}
