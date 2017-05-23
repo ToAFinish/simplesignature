@@ -1,4 +1,4 @@
-<apex:page standardController="signature__Signature__c" extensions="SampleOpportunityController" showHeader="false" sidebar="false" renderAs="pdf" applyBodyTag="false" applyHtmlTag="false">
+<apex:page standardController="signature__Signature__c" extensions="SampleOpportunityPDFController" showHeader="false" sidebar="false" renderAs="pdf" applyBodyTag="false" applyHtmlTag="false">
    <html>
       <head>
          <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.sampleinvoice, 'invoice.css')}"/>
