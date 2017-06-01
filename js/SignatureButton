@@ -1,0 +1,13 @@
+{!REQUIRESCRIPT("/soap/ajax/39.0/connection.js")} 
+
+var oStatus = "{!Opportunity.StageName }"; 
+
+if(oStatus == 'Closed/Won' || oStatus == 'Closed/Lost') 
+{ 
+  window.location.href = '/apex/signature__Signature?parentid={!Opportunity.Id}&backtoparent=1'; 
+} 
+else 
+{ 
+  alert('Opportunity Must be completed before signing.'); 
+  //location.reload(true); 
+}
