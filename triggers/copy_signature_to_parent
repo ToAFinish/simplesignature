@@ -21,8 +21,8 @@ trigger copySig on signature__Signature__c (after insert, after update) {
                                          where Id in:newIds
                                          limit 1000
                                         ];
-        if( !iList.isEmpty() ) {
-            for ( Opportunity o:iList ) {
+        if( !oList.isEmpty() ) {
+            for ( Opportunity o:oList ) {
                 o.SignatureImage__c = sigMap.get( o.Id ).signature__Signature__c;
                 o.Signed__c = TRUE;
             }
