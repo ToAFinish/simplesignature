@@ -9,7 +9,7 @@
                 var __sfdcSessionId = '{!GETSESSIONID()}';
             </script>
             <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"/>
-            <apex:stylesheet value="{!URLFOR($Resource.SignPad,'signature_pad-1.5.3/example/css/signature-pad.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.signature__SignPad,'signature_pad-1.5.3/example/css/signature-pad.css')}"/>
             <apex:stylesheet value="{!URLFOR($Resource.signature__SLDS105, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
              
             <script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
@@ -201,8 +201,8 @@
                           
                         </div> 
                     </div>
-                      <script src="{!URLFOR($Resource.SignPad,'signature_pad-1.5.3/example/js/signature_pad.js')}"/>
-                     <script src="{!URLFOR($Resource.SignPad,'signature_pad-1.5.3/example/js/app.js')}"/>
+                      <script src="{!URLFOR($Resource.signature__SignPad,'signature_pad-1.5.3/example/js/signature_pad.js')}"/>
+                      <script src="{!URLFOR($Resource.signature__SignPad,'signature_pad-1.5.3/example/js/app.js')}"/>
                      
                   
                </apex:outputPanel>
