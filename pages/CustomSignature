@@ -157,7 +157,7 @@
                                                     <use xlink:href="{!$Resource.signature__SLDS105}/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
                                                 </svg>
                                                 <!-- Input With onkeyup Attribute To Search For Records For Every Value Entered -->
-                                                <input id="searchInput" name="" class="slds-input" type="text" placeholder="Search Records" onkeyup="searchActs($(this))" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="SrchDrpDwn" />
+                                                <input id="searchInput" name="" class="slds-input" type="text" placeholder="Search Records" onkeyup="searchActs($(this))" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="SrchDrpDwn" style="width:73%" />
                                             </div>
                                         </div>
                                         
@@ -176,13 +176,10 @@
                                         
                                     </div>
                                 </apex:outputPanel>
-                                <apex:input type="date" value="{!dat}" styleClass="slds-input {!fieldValue}" rendered="{!fieldValue.type == 'date' || fieldValue.type == 'datetime'}"/> 
-                                <apex:outputText value="" rendered="{!fieldValue=='Opportunity__c'}" id="oppName" title="OpportunityName"></apex:outputText>
+                                <apex:input type="date" value="{!dat}" styleClass="slds-input {!fieldValue}" rendered="{!fieldValue.type == 'date' || fieldValue.type == 'datetime'}" style="width:73%" /> 
                                 <div id="msg{!fieldValue}" style="color:red;" class="msg"></div>
-                                    
-                              
-                            </td>
 
+                              </td>
                             </tr>
                             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
                             </apex:repeat>
