@@ -164,15 +164,14 @@
                             </td>
                             <td>
                                 <!-- RENDER A REGULAR FIELD INPUT -->
-                                <apex:inputField value="{!signVF[fieldValue]}" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type != 'date' && fieldValue.type != 'datetime' && fieldValue.type !='boolean' && fieldValue!='signature__Contact__c' && $ObjectType.Signature__c.fields[fieldValue].calculated==false}" style="width:73%"/>
+                                <apex:inputField value="{!signVF[fieldValue]}" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type != 'date' && fieldValue.type != 'datetime' && fieldValue.type !='boolean' && fieldValue!='signature__Contact__c' && $ObjectType.signature__Signature__c.fields[fieldValue].calculated==false}" style="width:73%"/>
                                 <!-- RENDER A CHECKBOX FIELD INPUT -->
                                 <apex:inputCheckbox value="{!signVF[fieldValue]}" id="checkerboxer" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type =='boolean'}" style="width:73%"/>
                                 <!-- RENDER A DATE FIELD -->
-                                <apex:input type="date" value="{!dat}" styleClass="slds-input {!fieldValue}" rendered="{!(fieldValue.type == 'date' || fieldValue.type == 'datetime') && !$ObjectType.Signature__c.fields[fieldValue].calculated}" style="width:73%"/> 
+                                <apex:input type="date" value="{!dat}" styleClass="slds-input {!fieldValue}" rendered="{!(fieldValue.type == 'date' || fieldValue.type == 'datetime') && !$ObjectType.signature__Signature__c.fields[fieldValue].calculated}" style="width:73%"/> 
                                 <!-- RENDER A FORMULA FIELD AS READ-ONLY -->
-                                <apex:outputText rendered="{!$ObjectType.Signature__c.fields[fieldValue].calculated && contains(paramList ,fieldValue)}" value="{!urlParamMap[fieldValue]}"></apex:outputText>
+                                <apex:outputText rendered="{!$ObjectType.signature__Signature__c.fields[fieldValue].calculated && contains(paramList ,fieldValue)}" value="{!urlParamMap[fieldValue]}"></apex:outputText>
                                 <!-- RENDER A CONTACT LOOKUP FIELD INPUT -->
-                                <apex:inputField value="{!signVF[fieldValue]}" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type != 'date' && fieldValue.type != 'datetime' && fieldValue!='Opportunity__c' && fieldValue!='signature__Contact__c'}" style="width:73%"/>
                                 <apex:outputPanel rendered="{!if(fieldValue=='signature__Contact__c',true,false)}">
                                     <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
                                         <div class="slds-form-element">
