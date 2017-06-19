@@ -56,23 +56,38 @@
                             '{!fieldValue}'+':'+$('.'+'{!fieldValue}').val(),
                             </apex:repeat>
                         ];
-                        var field1 = [];                   
+                        var field1 = [];
+                        var checkboxesFound = 0;
+                        var inputs = document.getElementsByTagName("input");
                         for(var i=0;i<fields.length;i++){
                             var field = fields[i].split(':');
-                            if(field[0]=='Opportunity__c'){
-                                var oppId = '{!JSENCODE($CurrentPage.parameters.parentid)}';
-                                var oppfield = field[0]+':'+oppId;
-                                field1.push(oppfield);
-                            } else if(field[0]=='signature__Contact__c'){
+                            if(field[0]=='signature__Contact__c'){
                                 field[1] = document.getElementById('searchInput').name;
                                 var conField = field[0]+':'+field[1];
                                 field1.push(conField);
+                            } else if(field[1]=='on') {
+                                var inpId = '';
+                                var innerCheckboxesFound = 0;
+                                for (var x = 0; x < inputs.length; x++) {
+                                    inpId = inputs[x].id;
+                                    if(inpId.includes('checkerboxer')) {
+                                        innerCheckboxesFound++;
+                                        console.log('inputs###: '+inpId);
+                                        if(checkboxesFound < innerCheckboxesFound) {
+                                            //alert('DOINGIT!:'+field[0]);
+                                            var checkboxField = field[0]+':'+document.getElementById(inpId).checked;
+                                            field1.push(checkboxField);
+                                            break;
+                                        }
+                                    }
+                                }
+                                checkboxesFound++;
                             } else {
                                 var otherField = field[0]+':'+field[1];
                                 field1.push(otherField);                                
                             }        
                         }
-                        var result =  signature.SignatureController.saveFile2('{!signature__Signature__c.Id}', image,field1,legaltext,parentRecordId,pdftemplate,emailpdf,attachpdf,attachpdftoparent,requestedform,handleResult); 
+                        var result =  signature.SignatureController.saveFile4('{!Signature__c.Id}', image,field1,legaltext,parentRecordId,pdftemplate,emailpdf,attachpdf,attachpdftoparent,requestedform,requestedPDFName,contactField,handleResult); 
                     }
                     function handleResult(result,event) {
                         
@@ -148,6 +163,15 @@
                                 <apex:outputLabel rendered="{!fieldValue.label == 'Name 2'}">Last Name:</apex:outputLabel>  
                             </td>
                             <td>
+                                <!-- RENDER A REGULAR FIELD INPUT -->
+                                <apex:inputField value="{!signVF[fieldValue]}" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type != 'date' && fieldValue.type != 'datetime' && fieldValue.type !='boolean' && fieldValue!='signature__Contact__c' && $ObjectType.Signature__c.fields[fieldValue].calculated==false}" style="width:73%"/>
+                                <!-- RENDER A CHECKBOX FIELD INPUT -->
+                                <apex:inputCheckbox value="{!signVF[fieldValue]}" id="checkerboxer" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type =='boolean'}" style="width:73%"/>
+                                <!-- RENDER A DATE FIELD -->
+                                <apex:input type="date" value="{!dat}" styleClass="slds-input {!fieldValue}" rendered="{!(fieldValue.type == 'date' || fieldValue.type == 'datetime') && !$ObjectType.Signature__c.fields[fieldValue].calculated}" style="width:73%"/> 
+                                <!-- RENDER A FORMULA FIELD AS READ-ONLY -->
+                                <apex:outputText rendered="{!$ObjectType.Signature__c.fields[fieldValue].calculated && contains(paramList ,fieldValue)}" value="{!urlParamMap[fieldValue]}"></apex:outputText>
+                                <!-- RENDER A CONTACT LOOKUP FIELD INPUT -->
                                 <apex:inputField value="{!signVF[fieldValue]}" styleClass="{!IF(fieldValue.type =='boolean',''+fieldValue,'slds-input'+' '+fieldValue)}"  html-placeholder="{!if(fieldValue.type =='date','mm/dd/yyyy',if(fieldValue.label=='Name 2','Last Name',fieldValue.label))}" onchange="show('{!fieldValue}');" rendered="{!fieldValue.type != 'date' && fieldValue.type != 'datetime' && fieldValue!='Opportunity__c' && fieldValue!='signature__Contact__c'}" style="width:73%"/>
                                 <apex:outputPanel rendered="{!if(fieldValue=='signature__Contact__c',true,false)}">
                                     <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
@@ -176,7 +200,6 @@
                                         
                                     </div>
                                 </apex:outputPanel>
-                                <apex:input type="date" value="{!dat}" styleClass="slds-input {!fieldValue}" rendered="{!fieldValue.type == 'date' || fieldValue.type == 'datetime'}" style="width:73%" /> 
                                 <div id="msg{!fieldValue}" style="color:red;" class="msg"></div>
 
                               </td>
