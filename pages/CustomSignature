@@ -2,9 +2,8 @@
     <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
-
-          <meta name="apple-mobile-web-app-capable" content="yes"/>
-          <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+            <meta name="apple-mobile-web-app-capable" content="yes"/>
+            <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
             <script type="text/javascript">
                 var __sfdcSessionId = '{!GETSESSIONID()}';
             </script>
@@ -15,118 +14,117 @@
             <script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
             
             <script>
-                
-                $(document).ready(function() {
-                    var oppId = '{!JSENCODE($CurrentPage.parameters.parentid)}';
-                    if(oppId !=null && oppId !=''){
-                        result = sforce.connection.retrieve("Id,Name", "Opportunity", [oppId]);
-                        document.getElementById('pg:frm:fset:0:oppName').innerHTML = result[0].Name;
-                    }
-                    var lookupIconId = $('a[title="Contact Lookup (New Window)"]').attr("id");
-                    document.getElementById(lookupIconId).style.width="10%";
-                    document.getElementById(lookupIconId).style.border="none";                    
-                });
+                $(document).ready(function() {});
             </script>
             
             <script>
-                   var parentRecordId ='{!JSENCODE(parentId)}';
-                   if(parentRecordId=='' || parentRecordId==null){
-                       parentRecordId='noid';
-                   }  
-                   var backtoparent = '{!JSENCODE($CurrentPage.parameters.backtoparent)}';   
-                   console.log('backtoparent '+backtoparent);
-                function uploadFile(parentId)
-                    {    
-                        console.log('{!JSENCODE($CurrentPage.parameters.pdftemplate)}');
-                        var pdftemplate = '{!JSENCODE($CurrentPage.parameters.pdftemplate)}';
-                        var emailpdf = '{!JSENCODE($CurrentPage.parameters.emailpdf)}';
-                        var attachpdf = '{!JSENCODE($CurrentPage.parameters.attachpdf)}';
-                        var attachpdftoparent = '{!JSENCODE($CurrentPage.parameters.attachpdftoparent)}';
-                        var requestedform = '{!JSENCODE($CurrentPage.parameters.requestedform)}';
-                        
-                        var canvas = document.getElementById("padd");
-                        
-                        var context = canvas.getContext("2d");
-                        var mouseButton = 0;
-                        var lastX = lastY = null;
-                        var image = canvas.toDataURL().split(',')[1];
-                        
-                        var legaltext='';
-                        var fields = [<apex:repeat value="{!$ObjectType.signature__Signature__c.fieldsets.signature__SignatureFields}" var="fieldValue" id="fset">
-                            '{!fieldValue}'+':'+$('.'+'{!fieldValue}').val(),
-                            </apex:repeat>
-                        ];
-                        var field1 = [];
-                        var checkboxesFound = 0;
-                        var inputs = document.getElementsByTagName("input");
-                        for(var i=0;i<fields.length;i++){
-                            var field = fields[i].split(':');
-                            if(field[0]=='signature__Contact__c'){
-                                field[1] = document.getElementById('searchInput').name;
-                                var conField = field[0]+':'+field[1];
-                                field1.push(conField);
-                            } else if(field[1]=='on') {
-                                var inpId = '';
-                                var innerCheckboxesFound = 0;
-                                for (var x = 0; x < inputs.length; x++) {
-                                    inpId = inputs[x].id;
-                                    if(inpId.includes('checkerboxer')) {
-                                        innerCheckboxesFound++;
-                                        console.log('inputs###: '+inpId);
-                                        if(checkboxesFound < innerCheckboxesFound) {
-                                            //alert('DOINGIT!:'+field[0]);
-                                            var checkboxField = field[0]+':'+document.getElementById(inpId).checked;
-                                            field1.push(checkboxField);
-                                            break;
-                                        }
+            
+                var parentRecordId ='{!JSENCODE(parentId)}';
+                if(parentRecordId=='' || parentRecordId==null){
+                   parentRecordId='noid';
+                }  
+                var backtoparent = '{!JSENCODE($CurrentPage.parameters.backtoparent)}';   
+                var sdocstype = '{!JSENCODE($CurrentPage.parameters.sdocstype)}';
+                console.log('backtoparent '+backtoparent);
+                console.log('sdocstype '+sdocstype);
+                
+                function uploadFile(parentId){    
+                    var pdftemplate = '{!JSENCODE($CurrentPage.parameters.pdftemplate)}';
+                    console.log('{!JSENCODE($CurrentPage.parameters.pdftemplate)}');
+                    var emailpdf = '{!JSENCODE($CurrentPage.parameters.emailpdf)}';
+                    var attachpdf = '{!JSENCODE($CurrentPage.parameters.attachpdf)}';
+                    var attachpdftoparent = '{!JSENCODE($CurrentPage.parameters.attachpdftoparent)}';
+                    var requestedform = '{!JSENCODE($CurrentPage.parameters.requestedform)}';
+                    var requestedPDFName = '{!JSENCODE($CurrentPage.parameters.requestedPDFName)}';
+                    var contactField = '{!JSENCODE($CurrentPage.parameters.contactField)}';
+                    
+                    var canvas = document.getElementById("padd");
+                    
+                    var context = canvas.getContext("2d");
+                    var mouseButton = 0;
+                    var lastX = lastY = null;
+                    var image = canvas.toDataURL().split(',')[1];
+                    
+                    var legaltext='';
+                    
+                    var fields = [<apex:repeat value="{!$ObjectType.signature__Signature__c.fieldsets.signature__SignatureFields}" var="fieldValue" id="fset">
+                        '{!fieldValue}'+':'+$('.'+'{!fieldValue}').val(),
+                        </apex:repeat>
+                    ];
+                    var field1 = [];
+                    var checkboxesFound = 0;
+                    var inputs = document.getElementsByTagName("input");
+                    for(var i=0;i<fields.length;i++){
+                        var field = fields[i].split(':');
+                        if(field[0]=='signature__Contact__c'){
+                            field[1] = document.getElementById('searchInput').name;
+                            var conField = field[0]+':'+field[1];
+                            field1.push(conField);
+                        } else if(field[1]=='on') {
+                            var inpId = '';
+                            var innerCheckboxesFound = 0;
+                            for (var x = 0; x < inputs.length; x++) {
+                                inpId = inputs[x].id;
+                                if(inpId.includes('checkerboxer')) {
+                                    innerCheckboxesFound++;
+                                    console.log('inputs###: '+inpId);
+                                    if(checkboxesFound < innerCheckboxesFound) {
+                                        var checkboxField = field[0]+':'+document.getElementById(inpId).checked;
+                                        field1.push(checkboxField);
+                                        break;
                                     }
                                 }
-                                checkboxesFound++;
-                            } else {
-                                var otherField = field[0]+':'+field[1];
-                                field1.push(otherField);                                
-                            }        
-                        }
-                        var result =  signature.SignatureController.saveFile4('{!Signature__c.Id}', image,field1,legaltext,parentRecordId,pdftemplate,emailpdf,attachpdf,attachpdftoparent,requestedform,requestedPDFName,contactField,handleResult); 
-                    }
-                    function handleResult(result,event) {
-                        
-                        if(result.success) {
-                            try{
-                                console.log('backtoparent try '+backtoparent);
-                                if(backtoparent!='' && backtoparent!=null && (backtoparent=='1' || backtoparent==1) && parentRecordId!='noid'){
-                                    sforce.one.navigateToSObject(parentRecordId,'detail');
-                                }
-                                else{
-                                    sforce.one.navigateToSObject(result.signId,'detail');
-                                }
-                                console.log('Successfully saved signature in SF1');
                             }
-                            catch(err){
-                                console.log('Successfully saved signature in classic SF');
-                                if(backtoparent!='' && backtoparent!=null && (backtoparent=='1' || backtoparent==1) && parentRecordId!='noid'){
+                            checkboxesFound++;
+                        } else {
+                            var otherField = field[0]+':'+field[1];
+                            field1.push(otherField);                                
+                        }        
+                    }
+                    var result =  signature.SignatureController.saveFile4('{!signature__Signature__c.Id}', image,field1,legaltext,parentRecordId,pdftemplate,emailpdf,attachpdf,attachpdftoparent,requestedform,requestedPDFName,contactField,handleResult); 
+                }
+                
+                function handleResult(result,event) {
+                    
+                    if(result.success) {
+                        try{
+                            console.log('backtoparent try '+backtoparent);
+                            if(backtoparent!='' && backtoparent!=null && (backtoparent=='1' || backtoparent==1) && parentRecordId!='noid'){
+                                sforce.one.navigateToSObject(parentRecordId,'detail');
+                            }
+                            else{
+                                sforce.one.navigateToSObject(result.signId,'detail');
+                            }
+                            console.log('Successfully saved signature in SF1');
+                        }
+                        catch(err){
+                            console.log('Successfully saved signature in classic SF');
+                            if(backtoparent!='' && backtoparent!=null && (backtoparent=='1' || backtoparent==1) && parentRecordId!='noid'){
+                                if(sdocstype!='' && sdocstype !=null ){
+                                    window.location='/apex/sdoc__SDCreate1?id='+parentRecordId+'&Object='+sdocstype ; 
+                                } else {
                                     window.location='/'+parentRecordId; 
                                 }
-                                else{
-                                    window.location='/'+result.signId;
-                                }
                             }
-                        } else {
-                            var s = result.errorMessage;
-                            var rx = s.match(/\[(.*?)\]/);
-                            $('.msg').html("");  
-                            $('#msg'+rx[1]).html("Incorrect date. Please review and resubmit.");
-                            
+                            else{
+                                window.location='/'+result.signId;
+                            }
                         }
+                    } else {
+                        var s = result.errorMessage;
+                        var rx = s.match(/\[(.*?)\]/);
+                        $('.msg').html("");  
+                        $('#msg'+rx[1]).html("Incorrect date. Please review and resubmit.");
                     }
+                }
+                
+                function show(f){
+                    if(f == 'signature__Name__c' || f == 'signature__City__c'){
+                       showButton();
+                    }
+               }
                     
-                    function show(f){
-                        if(f == 'signature__Name__c' || f == 'signature__Signature__city__c'){
-                           showButton();
-                        }
-                   }
-                        
-            </script>
+        </script>
             
         </head>
         <style>
@@ -142,24 +140,50 @@
         </style>     
         <body>
             <div class="slds">
-                <div class="slds-page-header" role="banner">
+                <div class="slds-page-header" role="banner" id="deskHeader">
                     <div class="slds-grid">
-                      <span class="slds-text-heading--small"><b>Page Title Goes Here</b></span>
+                      <span class="slds-text-heading--small"><b>{!$Label.signature__Page_Title}</b></span>
                       <div style="position:absolute;top:-20px;right:220px;border-left:thin #d8dde6 solid; height:50px;" />
                       <a href="http://www.simplesignatureapp.com/" target="_blank"><apex:image url="{!$Resource.signature__SSLogo}" style="position:absolute;top:-24px;right:5px;"/></a>
                     </div>
-                </div><br/>
+                </div>
+                <div class="slds-page-header" role="banner" id="mobHeader">
+                    <div width="100%">                     
+                      <span class="slds-text-heading--small"><center><b>{!$Label.signature__Page_Title}</b></center></span>
+                      <br/>
+                      <table width="100%">
+                          <col width="55%"/>
+                          <col width="4%"/>
+                          <col width="41%"/>
+                          <tr>
+                              <td>
+                                  <span><a href="http://www.simplesignatureapp.com/" target="_blank"><apex:image url="{!$Resource.signature__SSLogo}" /></a></span>
+                              </td>
+                              <td>
+                                 <div style="border-left:thin #d8dde6 solid; height:50px;" />
+                              </td>
+                              <td>
+                                 <!--<button type="button" onclick="window.open('http://login.salesforce.com/','_blank');return false;" >Preview Document</button>-->
+                              </td>
+                          </tr>
+                      </table>
+                    </div>
+                </div>
+                <br/>
 
                <apex:form id="frm"> 
                     <apex:actionFunction Name="showButton" reRender="btnId" />
                         <apex:pageMessages ></apex:pageMessages>
                         <table style="margin-left:2%;width:97%;">
-                            <tr><td colspan="2">Legal Text Goes Here</td></tr>
+                            <tr><td colspan="2">{!$Label.signature__Long_Legal_Text_1} {!$Label.signature__Long_Legal_Text_2}</td></tr>
                             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
                             
                             <apex:repeat value="{!$ObjectType.signature__Signature__c.fieldsets.signature__SignatureFields}" var="fieldValue" id="fset">
                             <tr>
-                            <td><apex:outputLabel rendered="{!fieldValue.label != 'Name 2'}">{!fieldValue.label}:</apex:outputLabel>
+                            <td>
+                                <!-- RENDER THE REGULAR LABEL FOR THE FIELD -->
+                                <apex:outputLabel rendered="{!fieldValue.label != 'Name 2'}">{!fieldValue.label}:</apex:outputLabel>
+                                <!-- RENDER THE SPECIAL LABEL FOR THE "NAME2" FIELD -->
                                 <apex:outputLabel rendered="{!fieldValue.label == 'Name 2'}">Last Name:</apex:outputLabel>  
                             </td>
                             <td>
@@ -172,6 +196,7 @@
                                 <!-- RENDER A FORMULA FIELD AS READ-ONLY -->
                                 <apex:outputText rendered="{!$ObjectType.signature__Signature__c.fields[fieldValue].calculated && contains(paramList ,fieldValue)}" value="{!urlParamMap[fieldValue]}"></apex:outputText>
                                 <!-- RENDER A CONTACT LOOKUP FIELD INPUT -->
+                                
                                 <apex:outputPanel rendered="{!if(fieldValue=='signature__Contact__c',true,false)}">
                                     <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
                                         <div class="slds-form-element">
@@ -180,7 +205,7 @@
                                                     <use xlink:href="{!$Resource.signature__SLDS105}/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
                                                 </svg>
                                                 <!-- Input With onkeyup Attribute To Search For Records For Every Value Entered -->
-                                                <input id="searchInput" name="" class="slds-input" type="text" placeholder="Search Records" onkeyup="searchActs($(this))" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="SrchDrpDwn" style="width:73%" />
+                                                <input id="searchInput" value="{!contactName}" name="" class="slds-input" type="text" placeholder="Search Records" onkeyup="searchActs($(this))" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="SrchDrpDwn"  style="width:73%"/>
                                             </div>
                                         </div>
                                         
@@ -200,11 +225,12 @@
                                     </div>
                                 </apex:outputPanel>
                                 <div id="msg{!fieldValue}" style="color:red;" class="msg"></div>
-
-                              </td>
+                            </td>
                             </tr>
                             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
                             </apex:repeat>
+                            <tr><td>Account Name:</td><td><apex:outputText value="MobilRx Pharmacy" /></td></tr>
+                            
                         </table> 
                         
                 
@@ -220,16 +246,13 @@
                           
                         </div> 
                     </div>
-                      <script src="{!URLFOR($Resource.signature__SignPad,'signature_pad-1.5.3/example/js/signature_pad.js')}"/>
-                      <script src="{!URLFOR($Resource.signature__SignPad,'signature_pad-1.5.3/example/js/app.js')}"/>
-                     
-                  
-               </apex:outputPanel>
-              
+                    <script src="{!URLFOR($Resource.signature__SignPad,'signature_pad-1.5.3/example/js/signature_pad.js')}"/>
+                    <script src="{!URLFOR($Resource.signature__SignPad,'signature_pad-1.5.3/example/js/app.js')}"/>
+                </apex:outputPanel>
                 <apex:outputPanel id="btnId">
                         <div style="height:60px;"/>
                        <center> 
-                           <apex:commandButton id="btn" value="{!$Label.signature__submit_button}" onclick="uploadFile('tedt');return false;" styleClass="slds-button slds-button--neutral" /> 
+                           <apex:commandButton id="btn" value="{!$Label.signature__submit_button}" onclick="uploadFile('tedt');return false;" styleClass="slds-button slds-button--neutral"  /> 
                         </center>
                 </apex:outputPanel>
                 </apex:form>
@@ -292,16 +315,26 @@
                 height: 200px;
                 margin-top: 50px;
                 position: relative ;
-               // margin-left: -543px;
-               // width: 80%;
+                //margin-left: -543px;
+                //width: 80%;
         }
         .m-signature-pad--body{
                 height: 160px;
                 top: -1px;
                 //margin-top: 50px;
                 //position: static;
-               // margin-left: -543px;
+                //margin-left: -543px;
                 //width: 100%;
+        }
+        @media only screen and (max-width : 768px) {
+            #deskHeader{
+                display:none;
+            }
+        }
+        @media only screen and (min-width : 769px) {
+            #mobHeader{
+                display:none;
+            }
         }
     </style>
 </apex:page>
