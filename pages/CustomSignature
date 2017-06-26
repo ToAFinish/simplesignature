@@ -205,7 +205,8 @@
                                                     <use xlink:href="{!$Resource.signature__SLDS105}/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
                                                 </svg>
                                                 <!-- Input With onkeyup Attribute To Search For Records For Every Value Entered -->
-                                                <input id="searchInput" value="{!contactName}" name="" class="slds-input" type="text" placeholder="Search Records" onkeyup="searchActs($(this))" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="SrchDrpDwn"  style="width:73%"/>
+                                                <input id="searchInput" name="" class="slds-input" type="text" placeholder="Search Records" onkeyup="searchActs($(this))" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="SrchDrpDwn" style="width:73%"/>
+                                                <!-- INCLUDE THIS TO DEFAULT A NAME IN THE LOOKUP value="{!contactName}" -->
                                             </div>
                                         </div>
                                         
@@ -229,7 +230,7 @@
                             </tr>
                             <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
                             </apex:repeat>
-                            <tr><td>Account Name:</td><td><apex:outputText value="MobilRx Pharmacy" /></td></tr>
+                            <!-- <tr><td>Hard Coded Label:</td><td><apex:outputText value="Hard Coded Value" /></td></tr> -->
                             
                         </table> 
                         
@@ -256,7 +257,9 @@
                         </center>
                 </apex:outputPanel>
                 </apex:form>
-            </div>   
+            </div>
+            <!-- If removing the Simple Signature logo from the top of this page, please do not remove the powered by notice at the bottom of the page -->
+            <div align="center" style="color:gray"><br/><br />Powered by <i><a href="http://www.simplesignatureapp.com/" target="_blank">Simple Signature</a></i> from To A Finish</div>
         </body>
     </html>
     <script>
