@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <br/>
-                <c:SignatureForm id="signForm"/>
+                <signature:SignatureForm id="signForm"/>
             </div>
             <!-- If removing the Simple Signature logo from the top of this page, please do not remove the powered by notice at the bottom of the page -->
             <div align="center" style="color:gray"><br/><br />Powered by <i><a href="http://www.simplesignatureapp.com/" target="_blank">Simple Signature</a></i> from To A Finish</div>
