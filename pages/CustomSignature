@@ -36,7 +36,7 @@
                       </table>
                     </div>
                 </div>
-                <br/>
+                <div style="margin: 1em 1em 2em 1em">{!$Label.Long_Legal_Text_1}{!$Label.Long_Legal_Text_2}</div>
                 <signature:SignatureForm id="signForm"/>
             </div>
             <!-- If removing the Simple Signature logo from the top of this page, please do not remove the powered by notice at the bottom of the page -->
