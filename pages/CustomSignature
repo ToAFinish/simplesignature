@@ -17,24 +17,8 @@
                 </div>
                 <div class="slds-page-header" role="banner" id="mobHeader">
                     <div width="100%">                     
+                      <span><center><apex:image url="{!$Resource.signature__SSLogo}"  style="height:25px;" /></center></span>
                       <span class="slds-text-heading--small"><center><b>{!$Label.signature__Page_Title}</b></center></span>
-                      <br/>
-                      <table width="100%">
-                          <col width="55%"/>
-                          <col width="4%"/>
-                          <col width="41%"/>
-                          <tr>
-                              <td>
-                                  <span><a href="http://www.simplesignatureapp.com/" target="_blank"><apex:image url="{!$Resource.signature__SSLogo}" /></a></span>
-                              </td>
-                              <td>
-                                 <div style="border-left:thin #d8dde6 solid; height:50px;" />
-                              </td>
-                              <td>
-                                 <!--<button type="button" onclick="window.open('http://login.salesforce.com/','_blank');return false;" >Preview Document</button>-->
-                              </td>
-                          </tr>
-                      </table>
                     </div>
                 </div>
                 <div style="margin: 1em 1em 2em 1em">{!$Label.signature__Long_Legal_Text_1}{!$Label.signature__Long_Legal_Text_2}</div>
