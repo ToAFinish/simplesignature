@@ -1,11 +1,10 @@
-<apex:page standardController="signature__Signature__c" extensions="signature.EmbeddedSignatureController" showHeader="false" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+<apex:page renderAs="pdf"  standardController="signature__Signature__c" extensions="signature.EmbeddedSignatureController" showHeader="false" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
 <!--
     THIS IS THE SAME PAGE AS THE DEFAULT ONE THAT COMES WITH THE APP.
     MODIFY AS YOU WILL
 -->
 <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <head>
-            <apex:stylesheet value="{!URLFOR($Resource.SLDS080, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
             <style>
                 @page{
                     size: 235mm;
@@ -16,12 +15,12 @@
             <div class="slds">
                 <table width= "100%">
                     <tr>
-                        <th colspan="4">{!$Label.signature__Page_Title}<b>:v1</b></th>
+                        <th colspan="4">{!$Label.signature__Page_Title} <b>:v1</b></th>
                     </tr>
                     <tr><td colspan="4">&nbsp;</td></tr>
                     <tr>
                         <td colspan="4">
-                            <apex:outputField value="{!signature__Signature__c.signature__Legal_Text__c}"/>
+                            <apex:outputField value="{!signature__Signature__c.signature__Legal_Text__c}"/> 
                         </td>
                     </tr>
                     <tr><td colspan="4">&nbsp;</td></tr>
@@ -29,20 +28,28 @@
                     <apex:repeat value="{!$ObjectType.signature__Signature__c.fieldsets.signature__SignatureFields}" var="fieldValue">
                         <tr>
                             <td width="20%">
-                                <apex:outputLabel rendered="{!fieldValue.label != 'Name 2'}">{!fieldValue.label}:</apex:outputLabel>
-                                <apex:outputLabel rendered="{!fieldValue.label == 'Name 2'}">Last Name:</apex:outputLabel> 
+                                <apex:outputLabel >{!fieldValue.label}:</apex:outputLabel>
                             </td>
-                            <td width="40%"><apex:outputField value="{!signature__Signature__c[fieldValue]}"/></td>
+                             <td width="40%"><apex:outputField value="{!signature__Signature__c[fieldValue]}"/></td> 
                             <td>&nbsp;</td><td >&nbsp;</td>
                         </tr>    
                         
-                    </apex:repeat>
+                    </apex:repeat> 
                     <tr><td colspan="4">&nbsp;</td></tr>
-                    <tr>
-                        <td colspan="4">
-                            <apex:image url="/servlet/servlet.FileDownload?file={!attachemntId}" width="250" style="max-width: 350px;max-height: 250px;"/>
-                        </td>
-                    </tr>
+                    <apex:repeat value="{!Attachments}" var="att"  rendered="{!!isFile}">
+                        <tr>
+                            <td colspan="4">
+                                <apex:image url="/servlet/servlet.FileDownload?file={!att.id}" width="250" style="max-width: 350px;max-height: 250px;"/>
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                    <apex:repeat value="{!allFiles}" var="af"  rendered="{!isFile}">
+                        <tr>
+                            <td colspan="4">
+                                <apex:image url="/sfc/servlet.shepherd/version/download/{!af}" width="250" style="max-width: 350px;max-height: 250px;"/>
+                            </td>
+                        </tr>
+                    </apex:repeat>
                 </table>
             </div>
         </body>
