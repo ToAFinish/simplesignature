@@ -1,0 +1,136 @@
+<apex:page standardController="signature__Signature__c" language="{!language}" extensions="signature.EmbeddedSignatureController" showHeader="false" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false" action="{!fetchSignatureDetails}" lightningStylesheets="true">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <!-- LEAVE THIS CONTENT AS IS -->
+        <apex:outputText value="{!signature__Signature__c.signature__Status__c}" rendered="false"/>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+            <meta name="apple-mobile-web-app-capable" content="yes"/>
+            <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+            <apex:slds />
+            <apex:includeScript value="{!URLFOR($Resource.signature__jQuery, '/js/jquery.min.3.3.1.js')}" />
+        </head>
+
+        <!-- SCRIPT NEEDED FOR SIGNATURE REQUESTS -->
+        <script>
+             $(document).ready(function() {
+                 var status = '{!JSENCODE(signature__signature__c.signature__status__c)}';
+                 document.getElementById("notapp").style.display='none';
+                 if(status=='Not Approved'){
+                     document.getElementById("sign").style.display='none';
+                     document.getElementById("notapp").style.display='';
+                      $('.'+'Signed').addClass('slds-is-active');
+                      $('.'+'Signed').prevAll().addClass('slds-is-active');
+                 }
+                 else{
+                     $('.'+status).addClass('slds-is-active');
+                     $('.'+status).prevAll().addClass('slds-is-active');
+                 }
+                 if(status == 'Emailed')
+                     $('.slds-wizard__progress-bar').css("width","25%");
+                 else if(status == 'Viewed')
+                     $('.slds-wizard__progress-bar').css("width","50%");
+                 else if(status == 'Clicked')
+                     $('.slds-wizard__progress-bar').css("width","75%");
+                 else if(status == 'Not Approved'){
+                     $('.slds-wizard__progress-bar').css("width","100%");
+                 }else if(status == 'Signed')
+                     $('.slds-wizard__progress-bar').css("width","100%");
+             });
+        </script>
+       <body>
+            <div class="slds-scope">
+                <!-- CONTENT TO SHOW IF WE ARE DEALING WITH A SIGNATURE REQUEST -->
+                <center >
+                <div class="slds-wizard" role="navigation" style="width:80%;display:{!showemailtracking}" >
+                      <ol class="slds-wizard__list"><li class="slds-wizard__item Requested" >
+                          <div class="slds-wizard__link">
+                            <span class="slds-wizard__marker"></span>
+                            <span class="slds-wizard__label slds-text-title--caps slds-truncate" >Requested<br /><small><apex:outputField value="{!signature__Signature__c.signature__Requested__c}" /></small></span>
+                          </div>
+                        </li>
+                        <li class="slds-wizard__item Emailed">
+                          <div class="slds-wizard__link">
+                            <span class="slds-wizard__marker"></span>
+                            <span class="slds-wizard__label slds-text-title--caps slds-truncate" >Emailed<br /><small><apex:outputField value="{!signature__Signature__c.signature__Emailed__c}" /></small></span>
+                          </div>
+                        </li>
+                        <li class="slds-wizard__item Viewed">
+                          <div class="slds-wizard__link">
+                            <span class="slds-wizard__marker"></span>
+                            <span class="slds-wizard__label slds-text-title--caps slds-truncate" >Viewed<br /><small><apex:outputField value="{!signature__Signature__c.signature__Viewed__c}" /></small></span>
+                          </div>
+                        </li>
+                        <li class="slds-wizard__item Clicked">
+                          <div class="slds-wizard__link">
+                            <span class="slds-wizard__marker"></span>
+                            <span class="slds-wizard__label slds-text-title--caps slds-truncate" >Clicked<br /><small><apex:outputField value="{!signature__Signature__c.signature__Clicked__c}" /></small></span>
+                          </div>
+                        </li>
+                        <li class="slds-wizard__item Signed">
+                          <div class="slds-wizard__link">
+                            <span class="slds-wizard__marker"></span>
+                            <span class="slds-wizard__label slds-text-title--caps slds-truncate" id="sign">Signed<br /><small><apex:outputField value="{!signature__Signature__c.signature__Signed__c}" /></small></span>
+                            <span class="slds-wizard__label slds-text-title--caps slds-truncate" id="notapp">Not Approved<br /><small><apex:outputField value="{!signature__Signature__c.signature__NotApproved__c}" /></small></span>
+                          </div>
+                        </li>
+                    </ol>
+                </div>
+                <span class="slds-wizard__progress" style="top: 12;width: 78%;margin-left: 11%;display:{!showemailtracking}">
+                    <span class="slds-wizard__progress-bar"></span>
+                    <br/>
+                </span>
+                </center>
+
+                <!-- CONTENT TO SHOW IF THE SIGNATURE HAS BEEN COMPLETED -->
+                <table width= "100%" style="display:{!IF(signature__signature__c.signature__status__c == 'Signed','','none')}">
+
+                    <!-- SHOW THE TITLE OF THE SIGNATURE PAGE -->
+                    <tr>
+                        <th colspan="4">{!$Label.signature__Page_Title}</th>
+                    </tr>
+                    <tr><td colspan="4">&nbsp;</td></tr>
+
+                    <!-- SHOW THE LEGAL TEXT THAT WAS AGREED ON -->
+                    <tr>
+                        <td colspan="4">
+                            <apex:outputField value="{!signature__Signature__c.signature__Legal_Text__c}"/>
+                        </td>
+                    </tr>
+                    <tr><td colspan="4">&nbsp;</td></tr>
+
+                    <!-- SHOW THE LIST OF FIELDS THAT WERE SIGNED OFF ON -->
+                    <apex:repeat value="{!fieldSetList}" var="fieldApiName">
+                        <tr>
+                            <td width="20%">
+                                <apex:outputLabel value="{!$ObjectType.signature__Signature__c.Fields[fieldApiName].label}:"> </apex:outputLabel>
+                            </td>
+                            <td width="40%"><apex:outputField value="{!signForFieldSet[fieldApiName]}"/></td>
+                            <td>&nbsp;</td><td >&nbsp;</td>
+                        </tr>
+                    </apex:repeat> 
+                    <tr><td colspan="4">&nbsp;</td></tr>
+
+                    <!-- SHOW THE SIGNATURE(S) IF USING ATTACHMENTS -->
+                    <apex:repeat value="{!Attachments}" var="att" rendered="{!retroAttachment || !isFile}">
+                        <tr>
+                            <td colspan="4">
+                                <apex:image url="/servlet/servlet.FileDownload?file={!att.id}" />  <!-- width="250" style="max-width: 350px;max-height: 250px;" -->
+                            </td>
+                        </tr> 
+                    </apex:repeat>
+
+                    <!-- SHOW THE SIGNATURE(S) IF USING FILES -->
+                    <apex:repeat value="{!allFiles}" var="af" rendered="{!isFile}">
+                        <tr>
+                            <td colspan="4">
+                                <apex:image url="/sfc/servlet.shepherd/version/download/{!af}"/>  <!-- width="250" style="max-width: 350px;max-height: 250px;" -->
+                            </td>
+                        </tr> 
+                    </apex:repeat>
+
+                </table>
+            </div>
+        </body>
+    </html>
+</apex:page>
