@@ -1,0 +1,41 @@
+/*
+    TRIGGER TO CREATE SIGNATURE REQUEST IF A QUOTE, AND HAS NOTE YET BEEN SENT
+*/
+trigger CreateSignatureOnFile on ContentDocumentLink (after insert) {    
+    List<signature__Signature__c> signatures=new List<signature__Signature__c>();
+    Map<Id,Quote> qMap = New Map<Id,Quote>();
+    Map<Id,ContentVersion> cvMap = New Map<Id,ContentVersion>();
+    Set<Id> qIds = new Set<Id>();
+    Set<Id> dIds = new Set<Id>();
+    
+    for(ContentDocumentLink cFile:trigger.new){
+        if(String.valueof(cFile.LinkedEntityId).startsWith('0Q0')){
+            if(!qIds.contains(cFile.LinkedEntityId)) qIds.add(cFile.LinkedEntityId);
+            if(!dIds.contains(cFile.ContentDocumentId)) dIds.add(cFile.ContentDocumentId);
+        }
+    }
+
+    // FIND THE QUOTE ATTACHED TO THE FILE
+    List<Quote> qList = [select Id,ContactId from Quote where Id in:qIds Limit 200];
+    for(Quote q:qList) qMap.put(q.Id,q);
+    // FIND THE PDF ATTACHED TO THE FILE
+    List<ContentVersion> dList = [select Id,ContentDocumentId from ContentVersion where ContentDocumentId in:dIds Limit 200];
+    for(ContentVersion cv:dList) cvMap.put(cv.ContentDocumentId,cv);
+
+    // CREATE A SIGNATURE RECORD
+    for(ContentDocumentLink cFile:trigger.new){
+        if(String.valueof(cFile.LinkedEntityId).startsWith('0Q0') && 
+           qMap.containsKey(cFile.LinkedEntityId) && 
+           cvMap.containsKey(cFile.ContentDocumentId)){
+            signature__Signature__c sg=new signature__Signature__c();
+            sg.signature__AttachmentID__c=cvMap.get(cFile.ContentDocumentId).Id;
+            sg.signature__Quote__c=cFile.LinkedEntityId;
+            sg.signature__Status__c='Requested';
+            sg.signature__Requested__c=system.now();
+            sg.signature__EmailPDF__c=true;
+            sg.signature__Contact__c=qMap.get(cFile.LinkedEntityId).ContactId;
+            signatures.add(sg);
+        }
+    }
+    if(!signatures.isEmpty()) insert signatures;
+}
