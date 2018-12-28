@@ -3,7 +3,7 @@
 
     NOTE: ASSUMES A LOOKUP FIELD Quote__c HAS BEEN CREATED ON THE SIGNATURE OBJECT
 */
-trigger CreateSignature on Attachment (after insert) {    
+trigger CreateSignatureOnAttachment on Attachment (after insert) {    
     List<signature__Signature__c> signatures=new List<signature__Signature__c>();
     Map<Id,Quote> qMap = New Map<Id,Quote>();
     Set<Id> qIds = new Set<Id>();
