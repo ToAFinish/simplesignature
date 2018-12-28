@@ -1,0 +1,31 @@
+/*
+    TRIGGER TO CREATE SIGNATURE REQUEST IF A QUOTE, TYPE IS PDF, AND HAS NOTE YET BEEN SENT
+
+    NOTE: ASSUMES A LOOKUP FIELD Quote__c HAS BEEN CREATED ON THE SIGNATURE OBJECT
+*/
+trigger CreateSignature on Attachment (after insert) {    
+    List<signature__Signature__c> signatures=new List<signature__Signature__c>();
+    Map<Id,Quote> qMap = New Map<Id,Quote>();
+    Set<Id> qIds = new Set<Id>();
+    for(Attachment at:trigger.new){
+        if(at.ContentType=='application/pdf' && String.valueof(at.parentid).startsWith('0Q0')){
+            if(!qIds.contains(at.parentid)) qIds.add(at.parentid);
+        }
+    }
+    List<Quote> qList = [select Id,ContactId from Quote where Id in:qIds and SignatureRequestSent__c != true Limit 200];
+    for(Quote q:qList) qMap.put(q.Id,q);
+    for(Attachment at:trigger.new){
+        if(at.ContentType=='application/pdf' && String.valueof(at.parentid).startsWith('0Q0') && qMap.containsKey(at.parentid)){
+            signature__Signature__c sg=new signature__Signature__c();
+            sg.signature__AttachmentID__c=at.id;
+            sg.Quote__c=at.parentid;
+            sg.signature__Status__c='Requested';
+            sg.signature__Requested__c=system.now();
+            sg.signature__EmailPDF__c=true;
+            sg.signature__Contact__c=qMap.get(at.parentid).ContactId;
+            signatures.add(sg);
+        }
+    }
+    if(!signatures.isEmpty()) insert signatures;
+}
+
