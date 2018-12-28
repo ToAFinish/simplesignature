@@ -1,0 +1,105 @@
+global with sharing class GenerateQuotePDF {
+    /**
+     * Default header height for quote
+     */
+    private static final String DEFAULT_INVOICE_HEADER_HEIGHT = '100';
+     
+    /**
+     * Default footer height for quote
+     */
+    private static final String DEFAULT_INVOICE_FOOTER_HEIGHT = '100';
+     
+    /**
+     * Webservice method that is called from a custom button to generate
+     * an quote PDF file using quote templates feature.
+     * It generates the quote based on:
+     *      - The synced Quote, or
+     *      - The latest Quote
+     * If the Opportunity doesn't have any Quotes, this method doesn't do
+     * anything.
+     * 
+     * This method uses PageReference.getContent().
+     *
+     * @param oppsIdList {List<Id>} list of Opportunity Ids from where the method
+     *                   will generate the Quote PDF.
+     * @return {String} with an error message, if any. Blank otherwise.
+     */
+    webService static String GenerateQuotePDF(List<Id> oppsIdList) {
+        try {
+            //From list to set
+            final Set<Id> oppsId = new Set<Id>(oppsIdList);
+ 
+            //Get template Id for Quote and url to hack pdf generation
+            final String quoteTemplateId = '0EH58000001GI8D'; // needs to be hard-coded with the template id
+            String quoteHeaderHeight = '100'; // might need to change depending on template
+            String quoteFooterHeight = '100'; // might need to change depending on template
+            final String quoteTemplateDataViewerUrl = '/quote/quoteTemplateDataViewer.apexp?id={!QuoteId}&headerHeight={!QuoteHeaderHeight}&footerHeight={!QuoteFooterHeight}&summlid={!QuoteTemplateId}';
+             
+            //Pre-validations
+            //Quote_Template_Id and Quote_Template_Data_Viewer_URL are mandatory 
+            if (String.isBlank(quoteTemplateId) || String.isBlank(quoteTemplateDataViewerUrl)) {
+                String errorMsg = 'Quote Template Data Viewer URL is blank, please contact support.';
+ 
+                return errorMsg;
+            }
+             
+            //Default values for quote header/footer height
+            if (String.isBlank(quoteHeaderHeight)) quoteHeaderHeight = DEFAULT_INVOICE_HEADER_HEIGHT;
+            if (String.isBlank(quoteFooterHeight)) quoteFooterHeight = DEFAULT_INVOICE_FOOTER_HEIGHT; 
+ 
+            //Iterate over Opps and generate Attachments list
+            final List<Attachment> attList = new List<Attachment>();
+            for (Opportunity opp : [select Id,
+                                           (select Id, QuoteNumber, IsSyncing, CreatedDate
+                                            from Quotes
+                                            order by CreatedDate DESC)
+                                    from Opportunity
+                                    where Id IN :oppsId]) {
+                //No Quotes, no party
+                if (opp.Quotes.isEmpty()) continue;
+ 
+                //Synced quote
+                Quote theQuote = null;
+ 
+                //Try to get the synced one
+                for (Quote quoteAux : opp.Quotes) {
+                    if (quoteAux.IsSyncing) {
+                        theQuote = quoteAux;
+                        break;
+                    }
+                }
+ 
+                //No synced Quote, get the last one
+                if (theQuote == null) theQuote = opp.Quotes.get(0);
+ 
+                PageReference pageRef = new PageReference(
+                    quoteTemplateDataViewerUrl.replace('{!QuoteId}', theQuote.Id)
+                                              .replace('{!QuoteHeaderHeight}', quoteHeaderHeight)
+                                              .replace('{!QuoteFooterHeight}', quoteFooterHeight)
+                                              .replace('{!QuoteTemplateId}', quoteTemplateId)
+                );
+ 
+                attList.add(
+                    new Attachment(
+                        Name = 'Quote #' + theQuote.QuoteNumber + '.pdf',
+                        Body = pageRef.getContent(),
+                        ParentId = opp.Id
+                    )
+                );
+            }
+ 
+            //Create Attachments
+            if (!attList.isEmpty()) insert attList;
+             
+            return '';
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, e.getMessage());
+ 
+            final String errorMsg = 'An error has occured while generating the quote. Details:\n\n' +
+                                     e.getMessage() + '\n\n' +
+                                     e.getStackTraceString();
+             
+            return errorMsg;
+        }
+    }
+}
