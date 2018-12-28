@@ -1,0 +1,10 @@
+@isTest
+public class SampleQuotePDFControllerTest {
+
+    public static testMethod void unitTest(){
+        Quote opp = new Quote();
+        ApexPages.StandardController con = new ApexPages.StandardController(opp);
+        SampleQuotePDFController testObk = new SampleQuotePDFController(con);
+        testObk.getQuoteline();
+    }
+}
