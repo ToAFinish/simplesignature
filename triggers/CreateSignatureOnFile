@@ -29,7 +29,7 @@ trigger CreateSignatureOnFile on ContentDocumentLink (after insert) {
            cvMap.containsKey(cFile.ContentDocumentId)){
             signature__Signature__c sg=new signature__Signature__c();
             sg.signature__AttachmentID__c=cvMap.get(cFile.ContentDocumentId).Id;
-            sg.signature__Quote__c=cFile.LinkedEntityId;
+            sg.Quote__c=cFile.LinkedEntityId;
             sg.signature__Status__c='Requested';
             sg.signature__Requested__c=system.now();
             sg.signature__EmailPDF__c=true;
