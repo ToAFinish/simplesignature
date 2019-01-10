@@ -1,0 +1,32 @@
+@isTest
+public class SignatureTriggerTest{
+
+    public static TestMethod void TestUnit(){   
+
+        contact con=new contact();
+        con.firstname='test';
+        con.lastname='test';
+        con.email='testing@gmail.com';
+        insert con;
+       
+        signature__Signature__c sig = new signature__Signature__c();
+        insert sig;
+        
+        Attachment att=new attachment();
+        att.name='test';
+        att.body=blob.valueof('this is test');
+        att.parentid=sig.id;
+        insert att;
+        
+        signature__Signature__c si = new signature__Signature__c();
+        si.signature__Status__c = 'Signed';
+        si.signature__EmailPDF__c=true;
+        si.signature__AttachPDF__c=true;
+        si.signature__Contact__c=con.id;
+        si.signature__ParentLookupField__c='signature__Contact__c';
+        si.signature__AttachPDFtoParent__c=true;
+        si.id=sig.id;
+        si.signature__AttachmentID__c=att.id;
+        update si;
+    }
+}
