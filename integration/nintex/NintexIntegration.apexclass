@@ -1,0 +1,63 @@
+/*
+    GENERATES THE DRAWLOOP DOCUMENT
+    
+    Assumes custom fields: Opportunity.DDPId__c (formula/text with Id of the Drawloop package to use)
+                           Opportunity.Deploy__c (formula/text with the Id of the package Delivery Option to use)
+*/
+global class NintexIntegration {
+
+    public class NoDDPInfoException extends Exception { }
+
+    @future(callout=true)
+    public static void GenerateDoc(set<id> oppIds){
+
+        set<string> dpDeploySet=new set<string>();
+        List<Loop__DDP__c> ddps = [SELECT Id, (SELECT Id FROM Loop__Custom_Integration_Options__r limit:50000) FROM Loop__DDP__c limit:50000];
+        
+        for(Loop__DDP__c ddp:ddps){
+            for(Loop__DDP_Integration_Option__c cio:ddp.Loop__Custom_Integration_Options__r){
+                string key=string.valueof(ddp.id).substring(0,15)+''+string.valueof(cio.id).substring(0,15);
+                dpDeploySet.add(key);
+            }
+        }
+
+        Loop.loopMessage lm = new Loop.loopMessage();
+
+        // SESSION ID NEEDED IF IT CANNOT BE DETERMINED FROM UserInfo.getSessionId()
+        lm.sessionId =  UserInfo.getSessionId();
+
+        // SET DESIRED BATCH NOTIFICATION. IF THIS IS NOT DONE, THE DEFAULT IS 'NONE'
+        // THIS IS AVAILABLE IN LOOP 6.7 / 9.56 AND ABOVE
+        lm.batchNotification = Loop.loopMessage.Notification.BEGIN_AND_COMPLETE;
+        lm.batchNotification = Loop.loopMessage.Notification.ON_ERROR;
+        boolean isSend=false;
+        // LOOP THROUGH WHATEVER COLLECTIONS NECESSARY FOR THE DDP REQUESTS
+        for (opportunity c : [SELECT Id,DDPId__c,Deploy__c FROM opportunity WHERE Id IN :oppIds]) {
+            if(c.DDPId__c!=null && c.Deploy__c!=null && c.DDPId__c.length()>=15 && c.Deploy__c.length()>=15){
+                string key=string.valueof(c.DDPId__c).substring(0,15)+''+string.valueof(c.Deploy__c).substring(0,15);
+                if(dpDeploySet.contains(key)){
+                    isSend=true;
+                    // ADD A DDP RUN REQUEST
+                    lm.requests.add(new Loop.loopMessage.loopMessageRequest(
+                        c.Id, // MAIN RECORD ID - SAME OBJECT AS THE DDP RECORD TYPE SPECIFIES
+                        c.DDPId__c, // DDP ID
+                        new Map<string, string>{
+                            'deploy' => c.Deploy__c
+                        }
+                    ));
+                }else{
+                    // CHANGE THE EXCEPTION MESSAGE IF DESIRED
+                    throw new NoDDPInfoException('The DDP or Delivery Option specified was not found.');
+                }
+            }else if(c.DDPId__c.length()<15 || c.Deploy__c.length()<15){
+                 // CHANGE THE EXCEPTION MESSAGE IF DESIRED
+                 throw new NoDDPInfoException('The DDP or Delivery Option specified are not valid Id');
+            }
+        }
+        
+        // SEND ALL DDP RUN REQUESTS IN A SINGLE CALL OUT
+        if(isSend) {
+            lm.sendAllRequests();
+        }
+    }
+}
