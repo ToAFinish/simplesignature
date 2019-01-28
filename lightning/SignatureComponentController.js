@@ -9,19 +9,10 @@
             if(state==="SUCCESS"){              
                var record=res.getReturnValue();
                 if(record!=null && record!='' && record!=undefined){
-                     var pvalue='backtoparent=1';                 
-                    if(record.hasOwnProperty('Billing_Name__c')){
-                         pvalue+='&defaultvalue_Billing_Name__c='+record['Billing_Name__c'].replace('&','');       				 
+                    if(record.hasOwnProperty('FirstName')){
+                         var pvalue='fieldset=SignatureFields&attachpdf=1&backtoparent=1&defaultvalue_signature__Name__c='+record['FirstName'];
+        				 component.set("v.params",pvalue); 
                     }
-                    if(record.hasOwnProperty('AccountId')){
-                         pvalue+='&defaultfilterfield_signature__Contact__c=AccountId';       				 
-                    }
-                    if(record.hasOwnProperty('AccountId')){
-                         pvalue+='&defaultfiltervalue_signature__Contact__c='+record['AccountId'];       				 
-                    }
-                    
-                    component.set("v.params",encodeURI(pvalue)); 
-                    console.log(encodeURI(pvalue));
                 }
             }else{               
             }
