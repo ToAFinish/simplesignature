@@ -1,0 +1,55 @@
+/*
+  ProcessDDP page controller.  Creates Nintex Drawloop document
+*/
+public with sharing class ProcessDDPExt {
+    public Loop__DDP__c ddp { get; set; }
+    public Loop__DDP_Integration_Option__c deliveryOption { get; set; }
+    public List<Loop.ProcessDdpParameters> parameters { get; set; }
+    public List<sObject> records { get; set; }
+    public List<RecordInfo> infos { get; set; }
+
+    public ProcessDDPExt() {
+        string recordIdsStr = ApexPages.currentPage().getParameters().get('ids');
+        string ddpId = ApexPages.currentPage().getParameters().get('ddpId');
+        string deliveryOptionId = ApexPages.currentPage().getParameters().get('deliveryOptionId');
+        infos = new List<RecordInfo>();
+        records = new List<sObject>();
+        parameters = new List<Loop.ProcessDdpParameters>();
+        if (!String.isBlank(recordIdsStr)) {
+            List<Id> recordIds = recordIdsStr.split(',');
+            string sObjectType = 'Account';
+            string reqObjectType = ApexPages.currentPage().getParameters().get('sObjectType');
+
+            if (!string.isEmpty(reqObjectType) && Schema.getGlobalDescribe().get(reqObjectType) != null) {
+                sObjectType = reqObjectType;
+            }
+            records = Database.query('SELECT Id, Name FROM ' + sObjectType + ' WHERE Id IN :recordIds');//[ SELECT Id, Name FROM Account WHERE Id IN :accountIds ];
+            system.debug('records: ' + records);
+            for (sObject obj : records) {
+                Loop.ProcessDdpParameters params = new Loop.ProcessDdpParameters(ddpId, deliveryOptionId, obj.Id, new List<Id>());
+                params.theme = Loop.ProcessDdpParameters.ThemeStyle.Bootstrap_3_2;
+                if (infos.size() > 0) {
+                    params.theme = Loop.ProcessDdpParameters.ThemeStyle.DRAWLOOP;
+                }
+                //params.usePreview = true;
+                params.OnCompleteCallback = 'onDdpComplete';
+                infos.add(new RecordInfo(obj, params));
+            }
+        }
+
+        if (records.size() == 0) {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'You must specify at least one record Id via the "ids" query string parameter.'));
+        }
+    }
+
+    public class RecordInfo {
+        private sObject Record { get; set; }
+        public string RecordName { get; set; }
+        public Loop.ProcessDdpParameters Parameters { get; set; }
+        public RecordInfo(sObject record, Loop.ProcessDdpParameters parameters) {
+            this.Record = record;
+            this.Parameters = parameters;
+            this.RecordName = (string)record.get('Name');
+        }
+    }
+}
