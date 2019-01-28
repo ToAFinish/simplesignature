@@ -7,16 +7,16 @@
       
         <div class="slds-page-header" role="banner" id="mobHeader">
             <div width="100%">                     
-                <span><center><img src="{!$Resource.signature__SSLogo}"  style="height:25px;" /></center></span>
-                <span class="slds-text-heading--small"><center><b>{!$Label.signature.Page_Title}</b></center></span>
+                <span><center><img src="{!$Resource.SSLogo}"  style="height:25px;" /></center></span>
+                <span class="slds-text-heading--small"><center><b>{!$Label.c.Page_Title}</b></center></span>
             </div>
         </div>
     </div>
     
-    <div style="margin: 1em 1em 2em 1em">{!$Label.signature.Long_Legal_Text_1}{!$Label.signature.Long_Legal_Text_2}</div>
+    <div style="margin: 1em 1em 2em 1em">{!$Label.c.Long_Legal_Text_1}{!$Label.c.Long_Legal_Text_2}</div>
     <aura:if isTrue="{!v.params!=''}">
         <div style="-webkit-transform:translateZ(0px)">
-        <signature:SignatureForm isParamPassed="true" parentId="{!v.recordId}" ParamUrl="{!v.params}"/>
+        	<signature:SignatureForm isParamPassed="true" parentId="{!v.recordId}" ParamUrl="{!v.params}"/>
         </div>
     </aura:if>
     <div align="center" style="color:gray"><br/><br />Powered by <i><a href="http://www.simplesignatureapp.com/" target="_blank">Simple Signature</a></i> from To A Finish</div>
