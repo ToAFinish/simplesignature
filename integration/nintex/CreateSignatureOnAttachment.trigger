@@ -1,5 +1,5 @@
 /*
-    TRIGGER TO CREATE SIGNATURE REQUEST IF A QUOTE, TYPE IS PDF, AND HAS NOTE YET BEEN SENT
+    TRIGGER TO CREATE SIGNATURE REQUEST IF A OPPORTUNITY, TYPE IS PDF, AND HAS NOTE YET BEEN SENT
     custom fields created: signature__Signature__c.DeliveredFinalPDF__c (checkbox)
                            Opportunity.SignatureRequestSent__c (checkbox)
 */
