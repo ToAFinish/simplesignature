@@ -1,0 +1,6 @@
+<apex:page controller="ProcessDDPExt" showHeader="false" sidebar="false">
+    <apex:messages />
+    <apex:repeat value="{!infos}" var="a">
+        <Loop:processDDP parameters="{!a.Parameters}" />
+    </apex:repeat>
+</apex:page>
