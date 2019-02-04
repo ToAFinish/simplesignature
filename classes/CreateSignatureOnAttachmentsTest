@@ -1,0 +1,45 @@
+@isTest
+public class CreateSignatureOnAttachmentsTest {
+  public static TestMethod void TestUnit(){   
+    Account acc = new Account (name='Acme');
+        insert acc;
+        
+        contact con=new contact();
+        con.firstname='test';
+        con.lastname='test';
+        con.email='testing@gmail.com';
+        con.AccountId= acc.Id;
+        insert con;
+        
+        Opportunity opp= new Opportunity ();
+        opp.name= 'Testopp';
+        Opp.Accountid= acc.id;
+        opp.CloseDate= date.today();
+        opp.StageName= 'Qualification';
+        insert opp;
+
+        Pricebook2 pb = new Pricebook2(Name = 'Standard Price Book 2009', Description = 'Price Book 2009 Products', IsActive = true );
+        insert pb;
+        Product2 prod = new Product2(Name = 'SLA: Bronze', IsActive = true);
+        insert prod;
+        PricebookEntry pbe=new PricebookEntry(unitprice=0.01,Product2Id=prod.Id, Pricebook2Id=Test.getStandardPricebookId(), IsActive= true); 
+        insert pbe;   
+
+        Quote q= new Quote ();
+        q.Name= 'Testq';
+        q.OpportunityId= Opp.id;
+        q.BillingStreet= '123';
+        q.BillingCity= 'City';
+        q.BillingPostalCode= '12345';
+        q.Pricebook2Id= pb.id;
+        insert q;
+        
+        Attachment att=new attachment();
+        att.name='test';
+        att.body=blob.valueof('this is test');
+        att.parentid=q.id;
+        att.ContentType='application/pdf';
+        insert att;
+
+    }
+}
