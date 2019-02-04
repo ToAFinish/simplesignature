@@ -1,0 +1,62 @@
+trigger CreateSignatureOnFileForQuote on ContentDocumentLink (after insert) {
+    
+    set<id> allfiles=new set<id>();
+    set<id> quotesid=new set<id>();
+    set<id> contentids=new set<id>();
+
+    for(ContentDocumentLink cFile:trigger.new){
+        if(String.valueof(cFile.LinkedEntityId).startsWith('0Q0')){
+            allfiles.add(cFile.id);
+            quotesid.add(cFile.LinkedEntityId);
+            contentids.add(cFile.ContentDocumentId);
+        }
+    }
+
+    map<id,quote> quotes=new map<id,quote>([select id,ContactId 
+                                            from quote 
+                                            where id in:quotesid 
+                                            and ReadytoSendforSignature__c = true 
+                                            limit 200]);
+
+    list<ContentDocumentLink> cdls = new list<ContentDocumentLink>();
+    try {
+        cdls=[Select id,LinkedEntityId, ContentDocumentId, ContentDocument.LatestPublishedVersionId
+              from ContentDocumentLink where id in:allfiles
+              limit 200];
+    } catch (exception ex) {
+        system.debug('$$$ERROR: this works via code but not for files uploaded manually.');
+    }
+                        
+    if(quotes.size()>0 && cdls.size()>0){
+        list<signature__Signature__c> signatures=new  list<signature__Signature__c>();
+        
+        for(ContentDocumentLink cdl:cdls){
+            if(quotes.containsKey(cdl.LinkedEntityId)) {
+
+                ContentVersion theFile = [SELECT Title, FileType, VersionData FROM ContentVersion 
+                                          WHERE ContentDocumentId=:cdl.ContentDocumentId 
+                                          order by Id desc limit 1];
+                Blob BodyData = theFile.VersionData;
+                String sTitle = theFile.Title;
+                if(!sTitle.ContainsIgnoreCase('.pdf')) sTitle += '_preview.pdf';
+    
+                Attachment anAttachment = new Attachment();
+                anAttachment.Body = BodyData;
+                anAttachment.Name = sTitle;
+                anAttachment.ParentId = cdl.LinkedEntityId;
+                insert anAttachment;
+    
+                signature__Signature__c sg=new signature__Signature__c();
+                sg.Quote__c=cdl.LinkedEntityId;
+                sg.signature__Contact__c=quotes.get(cdl.LinkedEntityId).ContactId;
+                sg.signature__AttachmentID__c=anAttachment.Id;
+                sg.signature__Status__c='Requested';
+                sg.signature__Requested__c=system.now();
+                sg.signature__EmailPDF__c=true;
+                insert sg;
+
+            }
+        }
+
+    }    
+}
