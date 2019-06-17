@@ -1,0 +1,116 @@
+<apex:page renderAs="pdf" showHeader="false" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+
+    <head>
+        <style type="text/css" media="print">
+            @page {
+                @top-center {
+                    content: element(header);
+                }
+
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+
+            div.pagebreak { 
+                page-break-before: always; 
+            }
+
+            div.header {
+                padding: 10px;
+                position: running(header);
+            }
+
+            div.footer {
+                display: block;
+                padding: 5px;
+                position: running(footer);
+            }
+
+            .pagenumber:before {
+                content: counter(page);
+            }
+
+            .pagecount:before {
+                content: counter(pages);
+            }
+
+            ol {
+                counter-reset: item
+            }
+
+            li {
+                display: block
+            }
+
+            li:before {
+                content: counters(item, ".") " ";
+                counter-increment: item
+            }
+        </style>
+    </head>
+    <div class="footer" style="color:#948e8e;font-size:12px;">
+        <div>Page <span class="pagenumber" /> of <span class="pagecount" /></div>
+    </div>
+    <div class="content">
+        <div align="center" style="font-size:18px;margin-top:60px;font-weight:800;">SIMPLE SIGNATURE<br />SAMPLE AGREEMENT</div>
+        <div style="margin:0 auto;margin-left:20px;margin-right:20px;">
+            <p style="font-size:14px;text-align:justify;">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+            <p style="font-size:14px;text-align:justify;">
+                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
+            </p>
+            <p style="font-size:14px;text-align:justify;">
+                At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
+            </p>
+
+            <div align="center" style="font-size:14px;margin-top:60px;">[Signature Page Follows]</div>
+            
+            <div class="pagebreak"> </div>
+
+            <p style="font-size:14px;text-align:justify;">IN  WITNESS  WHEREOF,  the  Signer  has  executed  this  signature  page  as of TODAY<!--<apex:outputField value="{!signature__Signature__c.signature__Date__c}"/>-->, understands that by execution and delivery of this signature page that the  terms of the Agreement are binding on the Signer, understands that this agreement is not binding upon the LLC until accepted below:</p>
+
+            <table style="width:100%"> 
+                <tr>
+                    <td width="50%"> 
+
+                        <p style="font-size:14px;text-align:justify;">Accepted on behalf of the ABC COMPANY</p>
+                    </td>
+                    <td>
+                        <p style="font-size:14px;text-align:justify;"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        By: 
+                        <!--<apex:image url="/sfc/servlet.shepherd/version/download/{!attachment2Id}" width="250" style="max-width: 350px;max-height: 250px;"/>-->
+                    </td>
+                    <td>
+                        By:
+                        <!--<apex:image url="/sfc/servlet.shepherd/version/download/{!attachmentId}" width="250" style="max-width: 350px;max-height: 250px;"/>-->
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Name: SAMPLE NAME 
+                    </td>
+                    <td>
+                        Name: <!--{!signature__Signature__c.signature__Full_Name__c}-->
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Title: SOME TITLE
+                    </td>
+                    <td>
+                        Title: <!--{!signature__Signature__c.signature__Title__c}-->
+                    </td>
+                </tr> 
+            </table>
+        </div>
+    </div>
+</apex:page>
