@@ -1,0 +1,52 @@
+/** 
+*
+*   Title     : SignatureOrderPDFControllerTest
+*   Author    : To A Finish
+*   Purpose   : This class returns a list of Order line items
+*   Revisions : 07/23/2019 - Initial draft @ 93%
+*               
+*         NOTE: Assumes a custom lookup field Order__c in the Signature object
+*
+**/
+
+@isTest
+public class SignatureOrderPDFControllerTest {
+
+    public static testMethod void unitTest(){
+        
+        Account act = new Account();
+        act.Name = 'Test';
+        insert act;
+        
+        Contact cnt = new Contact();
+        cnt.AccountId = act.Id;
+        cnt.lastname = 'Test';
+        cnt.firstname = 'Test';
+        insert cnt;
+        
+        Order ord = new Order();
+        ord.AccountId = act.Id;
+        ord.EffectiveDate = system.today();
+        ord.Status = 'Draft';
+		    insert ord;
+        
+        signature__Signature__c sig = new signature__Signature__c();
+        sig.signature__Contact__c = cnt.id;
+        sig.Order__c = ord.Id;
+        insert sig;
+        
+        PageReference pageRef = Page.SignatureOrderPDF;
+        pageRef.getParameters().put('id', String.valueOf(sig.Id));
+        Test.setCurrentPage(pageRef);
+        test.startTest();
+            ApexPages.StandardController con = new ApexPages.StandardController(ord);
+            SignatureOrderPDFController testObk = new SignatureOrderPDFController(con);
+            testObk.sig = sig;
+            testObk.con = cnt;
+            testObk.ord = ord;
+            testObk.attachmentid = 'XXXXXXXXXXXXXXXX';
+            testObk.getOrderline();
+        test.StopTest();
+
+    }
+}
