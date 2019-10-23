@@ -78,8 +78,13 @@ If the Signature page is being called from a parent object (Opportunity, Contact
  By default Signatures are stand-alone, but you can connect them to any object like Contracts, Orders, Cases or any other object.  Instructions to do so are below using the Contact object as an example:
  
 ⦁ Make sure you are in the “Lightning Salesforce ” web version of Salesforce, with Admin permissions.
+
 ⦁ At the top-right of the page click on Setup  after that click on object manager then click on Signature.
+
 ⦁ In the Fields and relationship section, press the New button and create a Lookup field to the object you want to have as the Signature parent.  (You can do more than one.)  Contact is already done for you.
+
 ⦁ Now scroll down to the Buttons, Links and Actions section, and click on the New Button or Link button.
+
 ⦁ Enter “New Signature” for the Label and then select List Button as the Display Type (and unselect the Display Checkboxes option).
+
 ⦁ For the Behavior you can select what you think is best, and for the Content Source, choose URL.  Your screen should be something like this
