@@ -2,9 +2,34 @@
 public class OpportunityPDFControllerTest {
 
     public static testMethod void unitTest(){
+        
+        Contact cont = new Contact();
+        cont.Lastname = 'Smith';
+        cont.Firstname = 'Joe';
+        insert cont;
+
         Opportunity opp = new Opportunity();
-        ApexPages.StandardController con = new ApexPages.StandardController(opp);
-        OpportunityPDFController testObk = new OpportunityPDFController(con);
-        testObk.getOpportunityline();
+        opp.Name = 'Test Opp';
+        opp.StageName = 'New';
+        opp.CloseDate = system.today();
+        insert opp;
+
+        signature__Signature__c sig = new signature__Signature__c();
+        sig.signature__Contact__c = cont.id;
+        sig.signature__Opportunity__c = opp.Id;
+        insert sig;
+        
+        PageReference pageRef = Page.OpportunityPDF;
+        pageRef.getParameters().put('id', String.valueOf(sig.Id));
+        Test.setCurrentPage(pageRef);
+        test.startTest();
+            ApexPages.StandardController con = new ApexPages.StandardController(opp);
+            OpportunityPDFController testObk = new OpportunityPDFController(con);
+            testObk.con = cont;
+            testObk.sig = sig;
+        	testObk.opp = opp;
+            testObk.attachmentid = 'XXXXXXXXXXXXXXXX';
+            testObk.getOpportunityline();
+        test.StopTest();
     }
 }
