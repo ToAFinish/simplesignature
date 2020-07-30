@@ -37,7 +37,7 @@
         
         <body>
              <div class="footer">
-                <div style="float:right;"><apex:image url="{!$Resource.SSLogo_v2_50}"/></div>
+                <div style="float:right;"><apex:image url="{!$Resource.signature__SSLogo_v2_50}"/></div>
              </div>
              
             <div class="content">
