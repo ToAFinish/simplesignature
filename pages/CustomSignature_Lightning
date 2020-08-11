@@ -1,0 +1,81 @@
+<apex:page standardController="signature__Signature__c" id="pg" extensions="signature.SignatureExt" language="{!language}" title="Simple Signature"  docType="html-5.0" standardStylesheets="true" sidebar="{!isSideBar}" showHeader="{!isHeader}"  action="{!updateStatus}" >
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            .canvasClass{
+                border-radius: 3px;box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19) !important;border:2px solid #F8F8F8;background: transparent;
+            }
+            .maimBlock{
+                width:50%;height:auto;margin:auto;
+            }
+            @media screen and (max-width: 600px) {
+                .maimBlock{
+                    width:90%;height:auto;margin:auto;   
+                    margin-top:50px;
+                    margin-bottom:50px;            
+                }
+            }
+            @media only screen and (max-width : 768px) {
+                #deskHeader{
+                    display:none;
+                }
+            }
+            @media only screen and (min-width : 769px) {
+                #mobHeader{
+                    display:none;
+                }
+            }
+        </style>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <apex:slds />
+    </head> 
+        <body>
+        <apex:form >
+          
+          </apex:form>
+            <div class="slds">
+                <div class="slds-page-header" role="banner" id="deskHeader">
+                    <div class="slds-grid">
+                      <span class="slds-text-heading--small"><b>{!$Label.signature__Page_Title}</b></span>
+                      <div style="position:absolute;top:5px;right:220px;border-left:thin #d8dde6 solid; height:50px;" />
+                      <apex:image url="{!$Resource.signature__SSLogo}" style="position:absolute;top:0px;right:15px;"/>
+                    </div>
+                </div>
+                <div class="slds-page-header" role="banner" id="mobHeader">
+                    <div width="100%">                     
+                      <span><center><apex:image url="{!$Resource.signature__SSLogo}"  style="height:25px;" /></center></span>
+                      <span class="slds-text-heading--small"><center><b>{!$Label.signature__Page_Title}</b></center></span>
+                    </div>
+                </div>
+            </div>
+
+         <div style="margin: 1em 1em 2em 1em">{!$Label.signature__Long_Legal_Text_1}{!$Label.signature__Long_Legal_Text_2}</div>
+
+         <apex:includeLightning />
+            
+         <div class="maimBlock" id="FlipcardContainer" />
+        
+         <!-- If removing the Simple Signature logo from the top of this page, please do not remove the powered by notice at the bottom of the page -->
+         <div align="center" style="color:gray"><br/><br />Powered by <i><a href="http://www.simplesignatureapp.com/" target="_blank">Simple Signature</a></i> from To A Finish</div>
+
+         <script>
+         $Lightning.use("signature:signatureFormApp", function() {
+         $Lightning.createComponent("signature:signatureForm",
+         { 
+            recordId:"{!$CurrentPage.parameters.id}",
+            isClassic:'YES'
+         },
+         "FlipcardContainer",
+         function(cmp) {
+             console.log('Lightning component created');
+             //console.log(cmp);
+            // console.log(document.getElementsByTagName('PractitionerName__c'))
+            
+         });
+         });
+         
+         </script>
+     </body>
+</apex:page>
