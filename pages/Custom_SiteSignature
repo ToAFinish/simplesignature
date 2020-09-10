@@ -1,0 +1,39 @@
+<apex:page standardController="signature__Signature__c" sidebar="false" extensions="signature.SiteSignatureController" id="pg" action="{!trackStatus}" title="Simple Signature"  docType="html-5.0" standardStylesheets="true" showHeader="false">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>  
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>   
+        <apex:slds />     
+    </head>
+    
+    <body>
+  
+        <div class="slds">
+            <div class="slds-page-header" role="banner" id="deskHeader">
+                <div class="slds-grid">
+                    <span class="slds-text-heading--small"><b>{!$Label.signature__Page_Title}</b></span>
+                    <div style="position:absolute;top:5px;right:220px;border-left:thin #d8dde6 solid; height:50px;" />
+                        <a href="http://www.simplesignatureapp.com/" target="_blank"><apex:image url="{!$Resource.signature__SSLogo}" style="position:absolute;top:0px;right:15px;"/></a>
+                    </div>
+                </div>
+                <div class="slds-page-header" role="banner" id="mobHeader">
+                    <div width="100%">                     
+                        <span><center><apex:image url="{!$Resource.signature__SSLogo}"  style="height:25px;" /></center></span>
+                        <span class="slds-text-heading--small"><center><b>{!$Label.signature__page_title}</b></center></span>
+                    </div>
+                </div>
+                <div style="margin: 1em 1em 2em 1em">{!$Label.signature__long_legal_text_1}{!$Label.signature__long_legal_text_2}</div>
+               
+                <div id="thePdf"><signature:PreviewPDF RecordId="{!$CurrentPage.parameters.parentid}" /> </div>
+               
+                <signature:LightningSignature thePdfPreviewId="thePdf" Size="100%" style="width:90%;margin:auto-width:50%;margin:auto"/>
+                
+            </div>    
+               
+        <div align="center" style="color:gray"><br/><br />Powered by <i><a href="http://www.simplesignatureapp.com/" target="_blank">Simple Signature</a></i> from To A Finish</div>           
+    
+    </body>
+       
+</html>
+</apex:page>
