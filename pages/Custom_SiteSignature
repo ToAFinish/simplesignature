@@ -27,7 +27,7 @@
                
                 <div id="thePdf"><signature:PreviewPDF RecordId="{!$CurrentPage.parameters.parentid}" /> </div>
                
-                <signature:LightningSignature thePdfPreviewId="thePdf" Size="100%" style="width:90%;margin:auto-width:50%;margin:auto"/>
+                <signature:LightningSignature thePdfPreviewId="thePdf" Size="100%" style="width:90%;margin:auto|width:50%;margin:auto"/>
                 
             </div>    
                
