@@ -19,4 +19,17 @@
             <div align="center" style="color:gray"><br/><br />Powered by <i><a href="http://www.simplesignatureapp.com/" target="_blank">Simple Signature</a></i> from To A Finish</div>
         </div>
     </div>
+<!--
+
+    THIS PAGE CAN BE CALLED FROM ANOTHER LIGHTNING COMPONENT LIKE THIS:
+    Fullscreen is the name of the component
+    recordId is the parent id variable
+
+    var urlEvent = $A.get('e.force:navigateToURL');
+    urlEvent.setParams({
+        'url' : '/lightning/cmp/c__Fullscreen?c__recordid='+recordId+'&c__Experience=a1m0D0000003P1b'
+    });
+    urlEvent.fire();
+
+// -->
 </aura:component>
