@@ -8,7 +8,7 @@
             <meta name="apple-mobile-web-app-capable" content="yes"/>
             <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
             <apex:slds />
-            <apex:includeScript value="{!URLFOR($Resource.signature__jQuery, '/js/jquery.min.3.3.1.js')}" />
+            <apex:includeScript value="{!URLFOR($Resource.signature__jQuery, '/js/jquery-3.5.1.js')}" />
         </head>
 
         <!-- SCRIPT NEEDED FOR SIGNATURE REQUESTS -->
@@ -115,7 +115,7 @@
                     <apex:repeat value="{!Attachments}" var="att" rendered="{!retroAttachment || !isFile}">
                         <tr>
                             <td colspan="4">
-                                <apex:image url="/servlet/servlet.FileDownload?file={!att.id}" />  <!-- width="250" style="max-width: 350px;max-height: 250px;" -->
+                                <apex:image url="/servlet/servlet.FileDownload?file={!att.id}"  style="{!imageHeightWidth}" /> 
                             </td>
                         </tr> 
                     </apex:repeat>
@@ -124,7 +124,7 @@
                     <apex:repeat value="{!allFiles}" var="af" rendered="{!isFile}">
                         <tr>
                             <td colspan="4">
-                                <apex:image url="/sfc/servlet.shepherd/version/download/{!af}"/>  <!-- width="250" style="max-width: 350px;max-height: 250px;" -->
+                                <apex:image url="/sfc/servlet.shepherd/version/download/{!af}"  style="{!imageHeightWidth}"/> 
                             </td>
                         </tr> 
                     </apex:repeat>
