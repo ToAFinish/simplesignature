@@ -12,6 +12,18 @@
     </div>
 
     <div style="margin: 1em 1em 2em 1em">{!$Label.signature.Long_Legal_Text_1} {!$Label.signature.Long_Legal_Text_2}</div>
+    
+    <!-- 
+    
+    	THIS CODE CAN BE USED TO INCLUDE A PDF ABOVE THE FIELDS
+	- MAKE UPDATES TO THE width, height, PDF_name
+	- CHANGE THE "Id" PARAMETER AS APPROPRIATE FOR THE PDF
+	- ADD THE NAME OF THE COMMUNITY NAME IF BEING USED IN A COMMUNITY, SUCH AS: /apex/community_name/PDF_name
+	
+    <iframe src="{! '/apex/PDF_name?isLight=yes&amp;Id=' + v.recordId }" width="100%"  frameBorder="0" height="500px"/> 
+    <br />
+
+    // -->
 
     <signature:SignatureFormConnector recordId="{!v.recordId}" ExperienceID="a0G1R00000lv9R9"/>
 
