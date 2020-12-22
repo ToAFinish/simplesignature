@@ -1,0 +1,4 @@
+<design:component>
+	  <design:attribute name="ExperienceID" label="Experience ID" required="true"/>
+      <design:attribute name="recordId" label="Parent ID" required="true" />
+</design:component>
