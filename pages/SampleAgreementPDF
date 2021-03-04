@@ -1,4 +1,4 @@
-<apex:page standardController="Signature__c" renderAs="pdf" showHeader="false" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+<apex:page standardController="signature__Signature__c" renderAs="pdf" showHeader="false" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
 
     <head>
         <style type="text/css" media="print">
