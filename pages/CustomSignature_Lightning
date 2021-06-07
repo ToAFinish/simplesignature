@@ -62,7 +62,7 @@
 
          <script>
          $Lightning.use("signature:signatureFormApp", function() {
-         $Lightning.createComponent("signature:signatureForm",
+         $Lightning.createComponent("signature:signatureFormLwc",
          { 
             recordId:"{!$CurrentPage.parameters.id}",
             isClassic:'YES'
