@@ -1,0 +1,31 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" >
+	<aura:attribute name="recordId" type="String" /> 
+    <aura:attribute name="defaultExperienceId" type="String" default="a0S4p00000XXXXX" /> 
+
+    <div class="slds">
+
+        <div class="slds-page-header" role="banner" id="mobHeader">
+            <div width="100%">                     
+                <span><center><img src="{!$Resource.signature__SSLogo}"  style="height:25px;" /></center></span>
+                <span class="slds-text-heading--small"><center><b>{!$Label.signature.Page_Title}</b></center></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- BELOW COMPONENT WILL SHOW LEGAL TEXT -->
+	  <signature:SignatureFormInfo experienceId="{!v.defaultExperienceId}" showLegalText="true"></signature:SignatureFormInfo>
+
+    <!-- BELOW COMPONENT WILL PREVIEW GOOGLE TEMPLATE -->
+    <signature:SignatureFormInfo parentId="{!v.recordId}" experienceId="{!v.defaultExperienceId}" previewTemplate="true" disableFile="true"></signature:SignatureFormInfo>
+
+    <!-- BELOW IFRAME CAN INCLUDE A STAND-ALONE PDF -->
+	  <!-- ADD NAME OF COMMUNITY NAME IF BEING USED IN A COMMUNITY, SUCH AS: /apex/community_name/PDF_name 
+    <iframe src="{! '/apex/PDF_name?isLight=yes&amp;Id=' + v.recordId }" width="100%" frameBorder="0" height="500px"/> 
+    <br />
+    // -->
+  
+    <!-- BELOW COMPONENT WILL SHOW THE SIGNATURE FORM -->
+    <signature:SignatureFormConnector recordId="{!v.recordId}" ExperienceID="{!v.defaultExperienceId}"/>
+
+    <div align="center" style="color:gray"><br/><br />Powered by <i><a href="http://www.simplesignatureapp.com/" target="_blank">Simple Signature</a></i> from To A Finish</div>
+</aura:component>
