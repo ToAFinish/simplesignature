@@ -1,4 +1,4 @@
-<apex:page standardController="signature__Signature__c" renderAs="pdf" showHeader="false" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
+<apex:page standardController="signature__Signature__c" extensions="signature.EmbeddedSignatureController" renderAs="pdf" showHeader="false" applyBodyTag="false" applyHtmlTag="false" standardStylesheets="false">
 
     <head>
         <style type="text/css" media="print">
@@ -85,11 +85,11 @@
                     <td>
 
                         By: 
-                        <!--<apex:image url="/sfc/servlet.shepherd/version/download/{!attachment2Id}" width="250" style="max-width: 350px;max-height: 250px;"/>-->
+                        <apex:image url="/sfc/servlet.shepherd/version/download/{!attachment2Id}" width="250" style="max-width: 350px;max-height: 250px;"/>
                     </td>
                     <td>
                         By:
-                        <!--<apex:image url="/sfc/servlet.shepherd/version/download/{!attachmentId}" width="250" style="max-width: 350px;max-height: 250px;"/>-->
+                        <apex:image url="/sfc/servlet.shepherd/version/download/{!attachmentId}" width="250" style="max-width: 350px;max-height: 250px;"/>
 
                     </td>
                 </tr>
