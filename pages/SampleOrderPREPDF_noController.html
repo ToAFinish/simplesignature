@@ -1,0 +1,171 @@
+<apex:page standardController="Order" showHeader="false" sidebar="false" renderAs="pdf" applyBodyTag="false" applyHtmlTag="false">
+   <html>
+      <head>
+         <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.invoice, 'invoice.css')}"/>
+         <style>
+            body,td,th, h1 {
+            font-family:Verdana, Arial, Helvetica, sans-serif;
+            font-size:9.5pt;
+            }
+            @page {
+            @bottom-center {
+            content: "Page " counter(page) " of " counter(pages);
+            font-weight: lighter;
+            font-size:8pt;
+            }
+            }                 
+         </style>
+      </head>
+      <body>
+         <table width="100%">
+            <tr>
+               <td width="40%" valign="top">
+                  &nbsp;<br />
+                  <apex:outputpanel >ABC Company<br/></apex:outputPanel>
+                  <apex:outputpanel >100 Main St<br/></apex:outputPanel>
+                  <apex:outputpanel >Austin, TX 78777<br/></apex:outputPanel>
+                  <apex:outputpanel > <b>Phone: &nbsp;</b> (512) 555-3333</apex:outputPanel>
+                  &nbsp;
+                  <apex:outputpanel > <b>Email: &nbsp;</b> sales@abccompany.com</apex:outputPanel>
+               </td>
+               <td colspan="4" valign="top">
+                  <div style="height: 125px;padding:0px;float:right">
+                     <apex:image url="{!URLFOR($Resource.signature__SSlogo)}" styleClass="rekey" style="height:55px;width:190px" />
+                  </div>
+               </td>
+            </tr>
+         </table>
+         <table width="100%">
+            <tr>
+               <td valign="top" width="50%">
+                   <table width="100%">
+                       <tr>
+                           <td valign="top" ><span style="font-weight:bold;">Bill To:</span></td>
+                           <td valign="top" >
+                              <span style="">
+                                 <apex:outputText value="{!Order.Account.Name}" />
+                              </span>
+                              <br/>
+                              <span style="">
+                                 <apex:outputText value="{!Order.Account.BillingStreet}"/>
+                              </span>
+                              <br/>
+                              <span style="">
+                                 <apex:outputText value="{!Order.Account.BillingCity}"/>
+                                 <apex:outputpanel rendered="{!AND(NOT(ISBLANK(Order.Account.BillingCity)),NOT(ISBLANK(Order.Account.BillingState)))}"> , 
+                                 </apex:outputpanel>
+                                 <apex:outputText value="{!Order.Account.BillingState}"/>
+                                 <apex:outputpanel rendered="{!AND(NOT(ISBLANK(Order.Account.BillingState)),NOT(ISBLANK(Order.Account.BillingPostalCode)))}"> , 
+                                 </apex:outputpanel>
+                                 <apex:outputText value="{!Order.Account.BillingPostalCode}"/>
+                              </span>
+                           </td>
+                        </tr>
+                    </table>
+                     <table width="100%">
+                        <tr>
+                           <td valign="top" ><span style="font-weight:bold;">Contact Name: </span></td>
+                           <td valign="top">
+                              {!Order.BillToContact.firstName} &nbsp;{!Order.BillToContact.LastName}
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><span style="font-weight:bold;">Phone# : &nbsp;&nbsp;</span></td>
+                           <td>{!Order.BillToContact.Phone}</td>
+                        </tr>
+                        <tr>
+                           <td valign="top"><span style="font-weight:bold;">Email:&nbsp;&nbsp;</span></td>
+                           <td>{!Order.BillToContact.Email}</td>
+                        </tr>
+                    </table>
+
+                </td>
+                <td valign="top" width="50%">
+                   <table width="100%">
+                        <tr>
+                           <td valign="top" ><span style="font-weight:bold;">Created Date: </span></td>
+                           <td valign="top">
+                              <apex:outputText value="{0, Date, MM/dd/yyyy}">
+                                 <apex:param value="{!TODAY()}"/>
+                              </apex:outputText>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td valign="top"><span style="font-weight:bold;">Order Description:&nbsp;&nbsp;</span></td>
+                           <td valign="top" bgcolor="#696969" >
+                              <table width="100%" border="0" cellpadding="4" cellspacing="4">
+                                 <tr>
+                                    <td bgcolor="#ffffff">{!Order.Name}</td>
+                                 </tr>
+                              </table>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><span style="font-weight:bold;">Order Amount: &nbsp;&nbsp;</span></td>
+                           <td><apex:outputText value="${0,number,###,##0.00}" >
+                               <apex:param value="{!Order.TotalAmount}" />
+                               </apex:outputText>
+                           </td>
+                        </tr> 
+                     </table> 
+               </td>
+            </tr>
+         </table>
+         <br/>
+         
+         <div class="productdiv">
+            <table class="producttable">
+               <tr style="background-color:silver;">
+                  <td class="bstd brtd brntd blntd" style="width:69%;"><b>Description</b></td>
+                  <td class="bstd brntd blntd trtd" style="width:10%;"><b>Price</b></td>
+                  <td class="bstd brntd blntd trtd" style="width:7%;"><b>Qty</b></td>
+                  <td class="bstd brtd blntd trtd" style="width:14%;"><b>Amount</b></td>
+               </tr>
+               <apex:variable var="rowCounter" value="{!0}" />
+               <apex:repeat value="{!Order.OrderItems}" var="item">
+                  <apex:variable var="rowCounter" value="{!rowCounter+1}" />
+                  <tr style="{!if(MOD(rowCounter,2)=0,'background:#DEDADA;','')}">
+                     <td style="border-right:1px solid;padding-top:5px;padding-bottom:5px;" valign="top">
+                        <apex:outputfield value="{!item.Product2.Name}"/>
+                     </td>
+                     <td class="trtd" style="border-right:1px solid;padding-top:5px;padding-bottom:5px;" valign="top">
+                        <apex:outputField value="{!item.UnitPrice}" />
+                     </td>
+                     <td class="trtd" valign="top" style="border-right:1px solid;padding-top:5px;padding-bottom:5px;">
+                        <apex:outputText value="{0,number,###,##0}" >
+                           <apex:param value="{!if(item.Quantity != null,item.Quantity,0)}" />
+                        </apex:outputText>
+                     </td>
+                     <td valign="top" class="trtd" style="padding-top:5px;padding-bottom:5px;">
+                        <apex:outputField value="{!item.TotalPrice}" />
+                     </td>
+                  </tr>
+               </apex:repeat>
+            </table>
+         </div>
+         <br/><br/>
+         <div class="subdiv" style="page-break-inside: avoid;">
+            <div class="subdivpart1" >
+               <span style="font-size: 11px;">Thank you for the opportunity to work with you!</span><br/><br/>
+               <span style="font-weight: bold;font-size: 12px;">NOTE: THIS IS NOT AN INVOICE</span><br/>
+            </div>
+            <div class="subdivpart2">
+               <hr width="220px;"/>
+               <table style="float: right;width:95%;">
+                  <tr>
+                     <td class="trtd">Total:</td>
+                     <td class="trtd">
+                        <apex:outputText value="${0,number,###,##0.00}" >
+                           <apex:param value="{!Order.TotalAmount}" />
+                        </apex:outputText>
+                     </td>
+                  </tr>
+               </table>
+               <br/><br/><br/>
+               [ SIGNATURE WILL GO HERE ]
+               <br/>
+            </div>
+         </div>
+      </body>
+   </html>
+</apex:page>
