@@ -25,7 +25,7 @@
                 </div>
                 <div style="margin: 1em 1em 2em 1em">{!$Label.signature__long_legal_text_1}{!$Label.signature__long_legal_text_2}</div>
 
-                <div id="thePdf"><signature:PreviewPDF RecordId="{!$CurrentPage.parameters.parentid}" isMobile="{!isSigned}"/></div>
+                <div id="thePdf"><signature:PreviewPDF RecordId="{!$CurrentPage.parameters.parentid}" isSigned="{!isSigned}"/></div>
 
                 <!-- can also include parentId and experienceId parameters for hard-coding -->
                 <signature:LightningSignature thePdfPreviewId="thePdf" Size="100%" style="width:90%;margin:auto|width:50%;margin:auto"/>
