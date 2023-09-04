@@ -1,0 +1,44 @@
+<template>
+
+	<lightning-quick-action-panel header="Sign">
+		<div class="slds-p-around_large">
+			<div class="slds">
+				<div class="slds-page-header" role="banner" id="mobHeader">
+					<div style="width:100%">
+						<span>
+                    <center> 
+                        <img src={signatureLogo}  style="height:25px;" /> 
+                    </center>
+                </span>
+						<span class="slds-text-heading--small">
+                    <center>
+                        <b>{page_TitleLabel}</b>
+                    </center>
+                </span>
+					</div>
+				</div>
+			</div>
+			<div style="display: none;">
+				this div is just to render on the page
+				{recordId}
+			</div>
+			<template if:true={retrievedRecordId}>
+				<c-signature-form-connector-l-w-c experience-id="XXXX" record-id={recordId}>
+				</c-signature-form-connector-l-w-c>
+			</template>
+
+			<div align="center" style="color:gray"><br/><br />Powered by
+				<i><a href="http://www.simplesignatureapp.com/" target="_blank">Simple Signature</a></i>
+				from To A Finish
+			</div>
+		</div>
+
+		<div slot="footer">
+            <lightning-button
+                variant="brand"
+                label="Cancel"
+				onclick={CloseActionScreenEvent}
+            ></lightning-button>
+        </div>
+	</lightning-quick-action-panel>
+</template>
