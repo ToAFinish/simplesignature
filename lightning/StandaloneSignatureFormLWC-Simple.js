@@ -1,7 +1,7 @@
 import { LightningElement, api } from 'lwc';
-import page_Title from '@salesforce/label/c.Page_Title';
+import page_Title from '@salesforce/label/signature.Page_Title';
 import { CloseActionScreenEvent } from 'lightning/actions';
-import signatureLogo from '@salesforce/resourceUrl/SSLogo';
+import signatureLogo from '@salesforce/resourceUrl/signature__SSLogo';
 
 export default class TestLeadSignatureLWC extends LightningElement {
     @api recordId;
