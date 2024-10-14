@@ -1,4 +1,4 @@
-<apex:page standardController="signature__Signature__c" sidebar="false" extensions="signature.SiteSignatureController" id="pg" action="{!trackStatus}" title="Simple Signature"  docType="html-5.0" standardStylesheets="true" showHeader="false">
+<apex:page standardController="signature__Signature__c" sidebar="false" extensions="signature.SiteSignatureController" id="pg" action="{!trackStatus}" title="Simple Signature"  docType="html-5.0" standardStylesheets="true" showHeader="false"  language="{!Lang}">
 <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>  
@@ -25,7 +25,7 @@
                 </div>
                 <div style="margin: 1em 1em 2em 1em">{!$Label.signature__long_legal_text_1}{!$Label.signature__long_legal_text_2}</div>
 
-                <div id="thePdf"><signature:PreviewPDF RecordId="{!$CurrentPage.parameters.parentid}" isSigned="{!isSigned}"/></div>
+                <div id="thePdf"><signature:PreviewPDF Lang="{!Lang}" RecordId="{!$CurrentPage.parameters.parentid}" isSigned="{!isSigned}"/></div>
 
                 <!-- can also include parentId and experienceId parameters for hard-coding -->
                 <signature:LightningSignature thePdfPreviewId="thePdf" Size="100%" style="width:90%;margin:auto|width:50%;margin:auto"/>
