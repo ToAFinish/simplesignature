@@ -1,4 +1,4 @@
-<apex:page id="pg" title="Simple Signature"  docType="html-5.0" standardStylesheets="true" showHeader="false">
+<apex:page id="pg" standardController="Signature__c" extensions="SiteSignatureController" title="Simple Signature"  docType="html-5.0" standardStylesheets="true" showHeader="false" language="{!Lang}">
 <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>  
@@ -32,14 +32,14 @@
                 <div class="slds-page-header" role="banner" id="mobHeader">
                     <div width="100%">                     
                         <span><center><apex:image url="{!$Resource.SSLogo}"  style="height:25px;" /></center></span>
-                        <span class="slds-text-heading--small"><center><b>{!$Label.signature__page_title}</b></center></span>
+                        <span class="slds-text-heading--small"><center><b>{!$Label.signature__Page_Title}</b></center></span>
                     </div>
                 </div>
 
                 <div style="margin: 1em 1em 2em 1em">Thank you!</div>
 
                 <center>
-                    <apex:outputText id="btn" value="{!$Label.signature__signature_accepted}" styleClass="slds-button " />
+                    <apex:outputText id="btn" value="{!$Label.signature__Signature_Accepted}" styleClass="slds-button " />
                     <br/><br/>
                     <button onclick="window.close();" class="slds-button slds-button_brand">{!$Label.signature__close_page}</button>
                 </center>
