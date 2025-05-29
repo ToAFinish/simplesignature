@@ -25,7 +25,7 @@
                 </div>
                 <div style="margin: 1em 1em 2em 1em">
                     <apex:outputPanel rendered="{!legalTextOverrided}">
-                        <apex:outputText value=" {!HTMLENCODE(legalText)}" escape="false" ></apex:outputText>
+                        <apex:outputText value=" {!legalText}" escape="false" ></apex:outputText>
                     </apex:outputPanel>
                     <apex:outputPanel rendered="{!!legalTextOverrided}">
                         <apex:outputText value="{!$Label.signature__Long_Legal_Text_1}" />
