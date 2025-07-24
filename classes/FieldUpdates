@@ -1,0 +1,78 @@
+public class FieldUpdates
+{
+	//Method to save data in temp table to store the signature.
+	@AuraEnabled
+	public static void saveSignature(contact con)
+	{
+		if (con.Id != null)
+		{
+			// THIS WOULD CREATE A RECORD TO POPULATE THE EMAIL FIELD ON THE CONTACT
+			// AFTER SIGNATURE WITH THE EMAIL FIELD ACCEPTED IN THE SIGNATURE FORM
+			List<signature__FieldUpdate__c> insertValues = new List<signature__FieldUpdate__c>();
+			signature__FieldUpdate__c fu = new signature__FieldUpdate__c();
+			fu.Name = 'U-' + con.Id + '1';
+			fu.signature__UserId__c = UserInfo.GetUserId();
+			fu.signature__RecordId__c = con.Id;
+			fu.signature__Field__c = 'Email';
+			fu.signature__Value__c = con.Email;
+			fu.signature__UpdateType__c = 'Text';
+			fu.signature__Status__c = 'Ready';
+			fu.signature__DefaultValueField__c = 'signature__Email__c';
+			insertValues.add(fu);
+
+			// THIS WOULD CREATE A RECORD TO POPULATE A CUSTOM FIELD ON THE LEAD OBJECT
+			// CALLED "Signed_Date__c" WITH THE DATE FIELD ON THE SIGNATURE FORM
+			fu = new signature__FieldUpdate__c();
+			fu.Name = 'U-' + con.Id + '2';
+			fu.signature__UserId__c = UserInfo.GetUserId();
+			fu.signature__RecordId__c = con.Id;
+			fu.signature__Field__c = 'Signed_Date__c';
+			fu.signature__ValueDate__c = con.Profiling_Consent_Date_MDE__c;
+			fu.signature__UpdateType__c = 'Date';
+			fu.signature__Status__c = 'Ready';
+			fu.signature__DefaultValueField__c = 'signature__Dte__c';
+			fu.signature__ForceOverwrite__c = 'Yes';
+			insertValues.add(fu);
+
+			// THIS WOULD CREATE A RECORD TO POPULATE THE RATING FIELD ON THE LEAD OBJECT
+			// WITH A SPECIFIC VALUE AFTER THE SIGNATURE IS ACCEPTED
+			fu = new signature__FieldUpdate__c();
+			fu.Name = 'U-' + con.Id + '3';
+			fu.signature__UserId__c = UserInfo.GetUserId();
+			fu.signature__RecordId__c = con.Id;
+			fu.signature__Field__c = 'Rating';
+			fu.signature__Value__c = 'Hot';
+			fu.signature__UpdateType__c = 'Text';
+			fu.signature__Status__c = 'Ready';
+			fu.signature__DefaultValueField__c = '';
+			insertValues.add(fu);
+
+			try
+			{
+				if (!insertValues.isEmpty())
+				{
+					insert insertValues;
+				}
+			}
+			catch (exception Ex)
+			{
+				// CLEAR OUT ANY EXISTING VALUES TO BE SAVED FOR THIS CONTACT
+				List<signature__FieldUpdate__c> deleteValues =
+				[
+						select Id
+						from signature__FieldUpdate__c
+						where signature__RecordID__c = :con.Id
+						limit 100
+				];
+				if (!deleteValues.isEmpty())
+				{
+					delete deleteValues;
+				}
+				if (!insertValues.isEmpty())
+				{
+					insert insertValues;
+				}
+			}
+		}
+	}
+}
